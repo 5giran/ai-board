@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { createTypeOrmOptions } from './config/typeorm.config';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { createTypeOrmOptions } from './config/typeorm.config';
     TypeOrmModule.forRootAsync({
       useFactory: () => createTypeOrmOptions(),
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
