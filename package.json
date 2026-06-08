@@ -1,0 +1,16 @@
+{
+  "name": "ai-board",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.5.2",
+  "scripts": {
+    "dev": "pnpm --parallel --filter web --filter api dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:api": "pnpm --filter api start:dev",
+    "build": "pnpm -r --if-present build",
+    "lint": "pnpm -r --if-present lint",
+    "test": "pnpm -r --if-present test",
+    "db:up": "docker compose -f infra/compose.yaml up -d",
+    "db:down": "docker compose -f infra/compose.yaml down"
+  }
+}

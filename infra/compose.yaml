@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: ai-board-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ai_board
+      POSTGRES_PASSWORD: ai_board_password
+      POSTGRES_DB: ai_board
+    volumes:
+      - ai-board-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ai_board -d ai_board"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  ai-board-postgres-data:
