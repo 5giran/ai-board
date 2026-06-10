@@ -48,7 +48,7 @@ export class AuthService {
     const existingEmail = await this.usersService.findByEmail(dto.email);
 
     if (existingEmail) {
-      throw new ConflictException('Email already exists');
+      throw new ConflictException('이미 사용하고 있는 이메일입니다.');
     }
 
     const existingNickname = await this.usersService.findByNickname(
@@ -56,11 +56,23 @@ export class AuthService {
     );
 
     if (existingNickname) {
-      throw new ConflictException('Nickname already exists');
+      throw new ConflictException('이미 사용하고 있는 닉네임입니다.');
     }
 
     const passwordHash = await argon2.hash(dto.password);
 
-    return this.usersService.createUser(dto.email, dto.nickname, passwordHash);
+    const user = await this.usersService.createUser(
+      dto.email,
+      dto.nickname,
+      passwordHash,
+    );
+
+    // user 전체를 반환하지 않고, 필드를 골라서 반환하게 함: passwordHash가 나가지 않음.
+    return {
+      id: user.id,
+      email: user.email,
+      nickname: user.nickname,
+      createAt: user.createAt,
+    };
   }
 }
