@@ -7,7 +7,19 @@ export const Route = createRootRoute({
 function RootLayout() {
   return (
     <div className="min-h-svh bg-background text-foreground">
-      <Outlet />
+      <AppHeader />
+
+      <main>
+        <Outlet />
+      </main>
     </div>
+  )
+}
+
+function AppHeader() {
+  return (
+    <header>
+      <h1>Extendly</h1>
+    </header>
   )
 }

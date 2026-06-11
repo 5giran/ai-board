@@ -110,7 +110,6 @@ function HomePage() {
 
   return (
     <div>
-      <AppHeader />
 
       <SearchHero
         query={searchQuery}
@@ -134,13 +133,6 @@ function HomePage() {
   )
 }
 
-function AppHeader() {
-  return (
-    <header>
-      <h1>AppHeader</h1>
-    </header>
-  );
-}
 
 type SearchHeroProps = {
   query: string;

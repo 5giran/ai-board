@@ -9,38 +9,148 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as MeRouteImport } from './routes/me'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as CuratorRouteImport } from './routes/curator'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ExtensionsNewRouteImport } from './routes/extensions/new'
+import { Route as ExtensionsExtensionIdRouteImport } from './routes/extensions/$extensionId'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeRoute = MeRouteImport.update({
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CuratorRoute = CuratorRouteImport.update({
+  id: '/curator',
+  path: '/curator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExtensionsNewRoute = ExtensionsNewRouteImport.update({
+  id: '/extensions/new',
+  path: '/extensions/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExtensionsExtensionIdRoute = ExtensionsExtensionIdRouteImport.update({
+  id: '/extensions/$extensionId',
+  path: '/extensions/$extensionId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/curator': typeof CuratorRoute
+  '/login': typeof LoginRoute
+  '/me': typeof MeRoute
+  '/signup': typeof SignupRoute
+  '/extensions/$extensionId': typeof ExtensionsExtensionIdRoute
+  '/extensions/new': typeof ExtensionsNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/curator': typeof CuratorRoute
+  '/login': typeof LoginRoute
+  '/me': typeof MeRoute
+  '/signup': typeof SignupRoute
+  '/extensions/$extensionId': typeof ExtensionsExtensionIdRoute
+  '/extensions/new': typeof ExtensionsNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/curator': typeof CuratorRoute
+  '/login': typeof LoginRoute
+  '/me': typeof MeRoute
+  '/signup': typeof SignupRoute
+  '/extensions/$extensionId': typeof ExtensionsExtensionIdRoute
+  '/extensions/new': typeof ExtensionsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/curator'
+    | '/login'
+    | '/me'
+    | '/signup'
+    | '/extensions/$extensionId'
+    | '/extensions/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/curator'
+    | '/login'
+    | '/me'
+    | '/signup'
+    | '/extensions/$extensionId'
+    | '/extensions/new'
+  id:
+    | '__root__'
+    | '/'
+    | '/curator'
+    | '/login'
+    | '/me'
+    | '/signup'
+    | '/extensions/$extensionId'
+    | '/extensions/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CuratorRoute: typeof CuratorRoute
+  LoginRoute: typeof LoginRoute
+  MeRoute: typeof MeRoute
+  SignupRoute: typeof SignupRoute
+  ExtensionsExtensionIdRoute: typeof ExtensionsExtensionIdRoute
+  ExtensionsNewRoute: typeof ExtensionsNewRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/me': {
+      id: '/me'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/curator': {
+      id: '/curator'
+      path: '/curator'
+      fullPath: '/curator'
+      preLoaderRoute: typeof CuratorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +158,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/extensions/new': {
+      id: '/extensions/new'
+      path: '/extensions/new'
+      fullPath: '/extensions/new'
+      preLoaderRoute: typeof ExtensionsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/extensions/$extensionId': {
+      id: '/extensions/$extensionId'
+      path: '/extensions/$extensionId'
+      fullPath: '/extensions/$extensionId'
+      preLoaderRoute: typeof ExtensionsExtensionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CuratorRoute: CuratorRoute,
+  LoginRoute: LoginRoute,
+  MeRoute: MeRoute,
+  SignupRoute: SignupRoute,
+  ExtensionsExtensionIdRoute: ExtensionsExtensionIdRoute,
+  ExtensionsNewRoute: ExtensionsNewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
