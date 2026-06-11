@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-// mock data
+// TODO: mock data
 type ExtensionSummary = {
   id: string;
   name: string;
@@ -66,16 +67,27 @@ const mockExtensions: ExtensionSummary[] = [
     sourceUrl: "#",
   },
 ];
-// 여기까지
+// TODO: 여기까지
 
 function HomePage() {
+  // useState Hook은 [현재값, 갱신함수] 배열을 리턴한다.
+  // 여기서는 [viewMode=현재값, setViewMode=갱신함수]로 나눠 받은 것 (구조 분해, 함수는 읽기쓰기 한묶음)
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  // HomePage의 return안에 JSX로 들어있는 컴포넌트들은 
+  // HomePage가 렌더링하는 자식/하위 컴포넌트입니다.
   return (
     <div>
       <AppHeader />
       <SearchHero />
       <FilterSection />
-      <ExtensionGrid extensions={mockExtensions} />
-      <ExtensionBoard extensions={mockExtensions} />
+
+      <ViewToggle viewMode={viewMode} onChange={setViewMode} />
+
+      {viewMode === "grid" ? (
+        <ExtensionGrid extensions={mockExtensions} />
+      ) : (
+        <ExtensionBoard extensions={mockExtensions} />
+      )}
     </div>
   );
 }
@@ -179,4 +191,26 @@ function ExtensionListItem({ extension }: ExtensionListItemProps) {
       <p>{extension.description}</p>
     </article>
   );
+}
+
+// 메인화면에서 그리드, 리스트 보기 방식 선택
+type ViewMode = "grid" | "list";
+
+type ViewToggleProps = {
+  viewMode: ViewMode;
+  onChange: (viewMode: ViewMode) => void;
+};
+
+function ViewToggle({ viewMode, onChange }: ViewToggleProps) {
+  return (
+    <div>
+      <button type="button" onClick={() => onChange("grid")}>
+        Grid {viewMode === "grid" ? "선택됨" : ""}
+      </button>
+
+      <button type="button" onClick={() => onChange("list")}>
+        Grid {viewMode === "list" ? "선택됨" : ""}
+      </button>
+    </div>
+  )
 }
