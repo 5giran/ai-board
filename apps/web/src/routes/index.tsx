@@ -75,6 +75,7 @@ function HomePage() {
       <SearchHero />
       <FilterSection />
       <ExtensionGrid extensions={mockExtensions} />
+      <ExtensionBoard extensions={mockExtensions} />
     </div>
   );
 }
@@ -101,8 +102,9 @@ function FilterSection() {
       <h2>FilterSection</h2>
     </section>
   );
- }
+}
 
+// Grid 형태 컴포넌트
 // ExtensionGrid라는 컴포넌트는 props로 extensions라는 값을 받을 건데, 그건 ExtensionSummary 여러 개가 들어있는 배열이다.
 type ExtensionGridProps = {
   extensions: ExtensionSummary[];
@@ -115,7 +117,8 @@ function ExtensionGrid({ extensions }: ExtensionGridProps) {
       <h2>ExtensionGrid</h2>
 
       <div>
-        // extensions 배열을 하나씩 돌고, 각각의 extension 하나마다 ExtensionCard를 하나씩 만든다.
+        // extensions 배열을 하나씩 돌고, 각각의 extension 하나마다
+        ExtensionCard를 하나씩 만든다.
         {extensions.map((extension) => (
           <ExtensionCard key={extension.id} extension={extension} />
         ))}
@@ -137,6 +140,40 @@ function ExtensionCard({ extension }: ExtensionCardProps) {
   return (
     <article>
       // props로 받은 extension 하나에서 해당 프로퍼티들을 꺼내서 화면에 보여줌
+      <h3>{extension.name}</h3>
+      <p>{extension.provider}</p>
+      <p>{extension.description}</p>
+    </article>
+  );
+}
+
+// 보드 리스트 형태 컴포넌트
+type ExtensionBoardProps = {
+  extensions: ExtensionSummary[];
+};
+
+function ExtensionBoard({ extensions }: ExtensionBoardProps) {
+  return (
+    <section>
+      <h2>ExtensionBoard</h2>
+
+      <div>
+        {extensions.map((extension) => (
+          <ExtensionListItem key={extension.id} extension={extension} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// 게시판을 위한 ListItem 하나만 받는거임.
+type ExtensionListItemProps = {
+  extension: ExtensionSummary;
+};
+
+function ExtensionListItem({ extension }: ExtensionListItemProps) {
+  return (
+    <article>
       <h3>{extension.name}</h3>
       <p>{extension.provider}</p>
       <p>{extension.description}</p>
