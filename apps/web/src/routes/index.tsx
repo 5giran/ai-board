@@ -6,15 +6,44 @@ export const Route = createFileRoute('/')({
 
 function HomePage() {
   return (
-    <main className="mx-auto flex min-h-svh max-w-3xl flex-col justify-center px-6">
-      <p className="text-sm font-medium text-muted-foreground">AI Board</p>
-      <h1 className="mt-3 text-3xl font-semibold tracking-normal">
-        환경 설정 완료
-      </h1>
-      <p className="mt-4 leading-7 text-muted-foreground">
-        다음 단계부터 NestJS 모듈, TypeORM Entity, React 화면을 하나씩 직접
-        구현합니다.
-      </p>
-    </main>
+    <div>
+      <AppHeader />
+      <SearchHero />
+      <FilterSection />
+      <ExtensionGrid />
+    </div>
+  )
+}
+
+
+function AppHeader() {
+  return (
+    <header>
+      <h1>AppHeader</h1>
+    </header>
+  )
+}
+
+function SearchHero() {
+  return (
+    <section>
+      <h2>SearchHero</h2>
+    </section>
+  )
+}
+
+function FilterSection() {
+  return (
+    <section>
+      <h2>FilterSection</h2>
+    </section>
+  )
+}
+
+function ExtensionGrid() {
+  return (
+    <section>
+      <h2>ExtensionGrid</h2>
+    </section>
   )
 }
