@@ -67,18 +67,31 @@ const mockExtensions: ExtensionSummary[] = [
     sourceUrl: "#",
   },
 ];
+
+const suggestedQueries = [
+  "GitHub PR을 빠르게 확인하고 싶어요",
+  "웹 자료를 노트로 저장하고 싶어요",
+  "커밋 메시지를 AI로 만들고 싶어요",
+];
 // TODO: 여기까지
 
+// HomePage는 컴포넌트들을 순서대로 조립하는 부모 컴포넌트다.
+// HomePage의 return안에 JSX로 들어있는 컴포넌트들은
+// HomePage가 렌더링하는 자식/하위 컴포넌트입니다.
 function HomePage() {
-  // useState Hook은 [현재값, 갱신함수] 배열을 리턴한다.
-  // 여기서는 [viewMode=현재값, setViewMode=갱신함수]로 나눠 받은 것 (구조 분해, 함수는 읽기쓰기 한묶음)
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  // HomePage의 return안에 JSX로 들어있는 컴포넌트들은 
-  // HomePage가 렌더링하는 자식/하위 컴포넌트입니다.
+  const [searchQuery, SetSearchQuery] = useState("");
+
   return (
     <div>
       <AppHeader />
-      <SearchHero />
+
+      <SearchHero
+        query={searchQuery}
+        suggestions={suggestedQueries}
+        onQueryChange={SetSearchQuery}
+      />
+
       <FilterSection />
 
       <ViewToggle viewMode={viewMode} onChange={setViewMode} />
@@ -100,10 +113,43 @@ function AppHeader() {
   );
 }
 
-function SearchHero() {
+type SearchHeroProps = {
+  query: string;
+  suggestions: string[];
+  onQueryChange: (query: string) => void;
+};
+
+// Hero: 페이지 맨 위에 크게 나오는 대표 섹션
+function SearchHero({
+  query,
+  suggestions,
+  onQueryChange,
+}: SearchHeroProps) {
   return (
     <section>
-      <h2>SearchHero</h2>
+      <h2>Search extensions by intent</h2>
+
+      {/* 검색 창 */}
+      <div>
+        <input 
+          value={query} 
+          onChange={(event) => onQueryChange(event.target.value)} 
+          placeholder="예: GitHub PR을 빠르게 확인하고 싶어요." 
+        />
+
+        <span>⌘ K</span>
+      </div>
+
+      <div>
+        {suggestions.map((suggestion) => (
+          <button 
+            key={suggestion} 
+            type="button" onClick={() => onQueryChange(suggestion)}
+          >
+            {suggestion}
+          </button>
+        ))}
+      </div>
     </section>
   );
 }
@@ -129,8 +175,8 @@ function ExtensionGrid({ extensions }: ExtensionGridProps) {
       <h2>ExtensionGrid</h2>
 
       <div>
-        // extensions 배열을 하나씩 돌고, 각각의 extension 하나마다
-        ExtensionCard를 하나씩 만든다.
+        {/* extensions 배열을 하나씩 돌고, 각각의 extension 하나마다
+        ExtensionCard를 하나씩 만든다. */}
         {extensions.map((extension) => (
           <ExtensionCard key={extension.id} extension={extension} />
         ))}
@@ -151,7 +197,6 @@ type ExtensionCardProps = {
 function ExtensionCard({ extension }: ExtensionCardProps) {
   return (
     <article>
-      // props로 받은 extension 하나에서 해당 프로퍼티들을 꺼내서 화면에 보여줌
       <h3>{extension.name}</h3>
       <p>{extension.provider}</p>
       <p>{extension.description}</p>
@@ -212,5 +257,8 @@ function ViewToggle({ viewMode, onChange }: ViewToggleProps) {
         Grid {viewMode === "list" ? "선택됨" : ""}
       </button>
     </div>
-  )
+  );
 }
+
+
+
