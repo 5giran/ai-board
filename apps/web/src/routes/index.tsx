@@ -19,7 +19,7 @@ type ExtensionSummary = {
   matchScore: number;
   isMcpVerified: boolean;
   sourceUrl: string;
-};
+}
 
 const mockExtensions: ExtensionSummary[] = [
   {
@@ -66,13 +66,13 @@ const mockExtensions: ExtensionSummary[] = [
     isMcpVerified: false,
     sourceUrl: "#",
   },
-];
+]
 
 const suggestedQueries = [
   "GitHub PR을 빠르게 확인하고 싶어요",
   "웹 자료를 노트로 저장하고 싶어요",
   "커밋 메시지를 AI로 만들고 싶어요",
-];
+]
 
 type PlatformFilterValue =
   | "All"
@@ -98,7 +98,7 @@ const platformFilters: PlatformFilterValue[] = [
 // HomePage가 렌더링하는 자식/하위 컴포넌트입니다.
 function HomePage() {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [searchQuery, SetSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedPlatform, setSelectedPlatform] = useState<PlatformFilterValue>("All")
 
   const visibleExtensions =
@@ -115,7 +115,7 @@ function HomePage() {
       <SearchHero
         query={searchQuery}
         suggestions={suggestedQueries}
-        onQueryChange={SetSearchQuery}
+        onQueryChange={setSearchQuery}
       />
 
       <FilterSection 
@@ -131,7 +131,7 @@ function HomePage() {
         <ExtensionBoard extensions={visibleExtensions} />
       )}
     </div>
-  );
+  )
 }
 
 function AppHeader() {
@@ -146,7 +146,7 @@ type SearchHeroProps = {
   query: string;
   suggestions: string[];
   onQueryChange: (query: string) => void;
-};
+}
 
 // Hero: 페이지 맨 위에 크게 나오는 대표 섹션
 function SearchHero({
@@ -180,7 +180,7 @@ function SearchHero({
         ))}
       </div>
     </section>
-  );
+  )
 }
 
 type FilterSectionProps = {
@@ -202,7 +202,7 @@ function FilterSection({
         onPlatformChange={onPlatformChange} 
       />
     </section>
-  );
+  )
 }
 
 // PlatformFilter이 자식
@@ -230,7 +230,7 @@ function PlatformFilter({
 // 중복 JSX 분리
 type ExtensionInfoProps = {
   extension: ExtensionSummary;
-};
+}
 
 function ExtensionInfo({ extension }: ExtensionInfoProps) {
   return (
@@ -239,14 +239,14 @@ function ExtensionInfo({ extension }: ExtensionInfoProps) {
       <p>{extension.provider}</p>
       <p>{extension.description}</p>
     </>
-  );
+  )
 }
 
 // Grid 형태 컴포넌트
 // ExtensionGrid라는 컴포넌트는 props로 extensions라는 값을 받을 건데, 그건 ExtensionSummary 여러 개가 들어있는 배열이다.
 type ExtensionGridProps = {
-  extensions: ExtensionSummary[];
-};
+  extensions: ExtensionSummary[]
+}
 
 // { extensions }: ExtensionGridProps - 그냥 props 받아옴
 function ExtensionGrid({ extensions }: ExtensionGridProps) {
@@ -271,21 +271,21 @@ function ExtensionGrid({ extensions }: ExtensionGridProps) {
 // ExtensionGrid는 목록 전체(ExtensionSummary[])를 받고,
 // ExtensionCard는 목록에서 꺼낸 하나(ExtensionSummary)를 받는다.
 type ExtensionCardProps = {
-  extension: ExtensionSummary;
-};
+  extension: ExtensionSummary
+}
 
 function ExtensionCard({ extension }: ExtensionCardProps) {
   return (
     <article>
       <ExtensionInfo extension={extension} />
     </article>
-  );
+  )
 }
 
 // 보드 리스트 형태 컴포넌트
 type ExtensionBoardProps = {
-  extensions: ExtensionSummary[];
-};
+  extensions: ExtensionSummary[]
+}
 
 function ExtensionBoard({ extensions }: ExtensionBoardProps) {
   return (
@@ -298,20 +298,20 @@ function ExtensionBoard({ extensions }: ExtensionBoardProps) {
         ))}
       </div>
     </section>
-  );
+  )
 }
 
 // 게시판을 위한 ListItem 하나만 받는거임.
 type ExtensionListItemProps = {
   extension: ExtensionSummary;
-};
+}
 
 function ExtensionListItem({ extension }: ExtensionListItemProps) {
   return (
     <article>
       <ExtensionInfo extension={extension} />
     </article>
-  );
+  )
 }
 
 // 메인화면에서 그리드, 리스트 보기 방식 선택
@@ -320,7 +320,7 @@ type ViewMode = "grid" | "list";
 type ViewToggleProps = {
   viewMode: ViewMode;
   onChange: (viewMode: ViewMode) => void;
-};
+}
 
 function ViewToggle({ viewMode, onChange }: ViewToggleProps) {
   return (
@@ -333,7 +333,7 @@ function ViewToggle({ viewMode, onChange }: ViewToggleProps) {
         List {viewMode === "list" ? "선택됨" : ""}
       </button>
     </div>
-  );
+  )
 }
 
 
