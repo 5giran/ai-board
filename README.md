@@ -30,6 +30,9 @@ pnpm dev
 
 이 프로젝트는 학습하면서 직접 구현하는 방식으로 진행합니다.
 
+- [Extendly 제품 명세](./docs/product/extendly_spec.md)
+- [Extendly UI/UX 구현 지시서](./docs/product/extendly_codex_ui_spec.md)
+- [Extendly 와이어프레임](./docs/wireframes/extendly_wireframes.html)
 - [전체 학습 가이드](./docs/README.md)
 - [학습 계약](./docs/learning-contract.md)
 - [진행 기록 템플릿](./docs/progress-template.md)
@@ -66,7 +69,7 @@ infra/
 
 1. NestJS 모듈 구조와 TypeORM Entity 직접 만들기
 2. Auth API: 회원가입, 로그인, JWT Guard
-3. Posts API: 게시글 CRUD, 검색, 페이징
-4. Comments/Tags API
+3. Extensions API: 익스텐션 CRUD, 검색, 페이징
+4. Comments/Tags/Bookmarks API
 5. React 화면과 API 연동
 6. RAG, MCP, Agent 기능 추가

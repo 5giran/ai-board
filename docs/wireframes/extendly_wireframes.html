@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extendly — 와이어프레임 모음</title>
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fafaf8; --surface:#fff; --surface2:#f1efe8;
+    --text:#2c2c2a; --text2:#5f5e5a; --text3:#9a9890;
+    --border:#c9c7bd; --border2:#b4b2a9; --border3:#e0ded6;
+    --radius-md:8px; --radius-lg:12px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--text);
+    font-family:'Open Sans','Segoe UI','Malgun Gothic',-apple-system,sans-serif;
+    line-height:1.6; padding:32px 20px 80px;}
+  .wrap{max-width:920px; margin:0 auto;}
+  .doc-head{text-align:center; margin-bottom:40px;}
+  .doc-head h1{font-size:26px; font-weight:700; margin:0 0 6px;}
+  .doc-head p{font-size:13px; color:var(--text2); margin:0;}
+  .screen{margin-bottom:48px;}
+  .screen-label{display:flex; align-items:center; gap:10px; margin-bottom:14px;}
+  .screen-num{width:26px; height:26px; border-radius:50%; background:var(--surface2);
+    display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--text2);}
+  .screen-label h2{font-size:17px; font-weight:700; margin:0;}
+  .screen-label .tag{font-size:11px; color:var(--text3); margin-left:auto;}
+  .frame{border:1.5px solid var(--border2); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface);}
+  .pad{padding:18px;}
+  .box2{background:var(--surface2); border-radius:4px;}
+  .ph{height:34px; border:1.5px solid var(--border2); border-radius:var(--radius-md);}
+  .btn{border:1.5px solid var(--border2); border-radius:var(--radius-md); background:var(--surface2);
+    display:flex; align-items:center; justify-content:center; font-size:13px;}
+  .lbl{font-size:11px; color:var(--text2); margin-bottom:5px;}
+  .hint{font-size:11px; color:var(--text3);}
+  .dashed{border:1.5px dashed var(--border3); border-radius:var(--radius-md);}
+  .chip{font-size:11px; padding:4px 12px; border:1.5px solid var(--border3); border-radius:14px; color:var(--text2);}
+  .grid{display:grid; gap:12px;}
+  .row{display:flex; align-items:center;}
+  table{width:100%; border-collapse:collapse; margin-top:18px; font-size:13px;}
+  th,td{border:1px solid var(--border3); padding:8px 10px; text-align:left;}
+  th{background:var(--surface2); font-weight:600;}
+  @media print{ body{padding:0;} .screen{page-break-inside:avoid;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="doc-head">
+    <h1>Extendly — 화면 와이어프레임</h1>
+    <p>익스텐션 아카이브 게시판 · RAG / MCP / Agent · 구조 설계용 (디자인 미적용)</p>
+  </div>
+
+  <!-- 1. AUTH -->
+  <div class="screen">
+    <div class="screen-label"><span class="screen-num">1</span><h2>로그인 / 회원가입</h2><span class="tag">게시판 필수 · 회원</span></div>
+    <div class="grid" style="grid-template-columns:1fr 1fr;">
+      <div class="frame pad">
+        <div class="hint" style="margin-bottom:14px;">[로그인]</div>
+        <div style="font-size:15px; font-weight:500; margin-bottom:16px;">로그인</div>
+        <div class="lbl">이메일</div><div class="ph" style="margin-bottom:12px;"></div>
+        <div class="lbl">비밀번호</div><div class="ph" style="margin-bottom:16px;"></div>
+        <div class="btn" style="height:38px; margin-bottom:12px;">로그인 버튼</div>
+        <div class="hint" style="text-align:center;">JWT 발급 · Argon2 검증</div>
+      </div>
+      <div class="frame pad">
+        <div class="hint" style="margin-bottom:14px;">[회원가입]</div>
+        <div style="font-size:15px; font-weight:500; margin-bottom:16px;">회원가입</div>
+        <div class="lbl">닉네임</div><div class="ph" style="margin-bottom:12px;"></div>
+        <div class="lbl">이메일</div><div class="ph" style="margin-bottom:12px;"></div>
+        <div class="lbl">비밀번호 / 확인</div><div class="ph" style="margin-bottom:16px;"></div>
+        <div class="btn" style="height:38px;">가입 버튼</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MAIN / SEARCH -->
+  <div class="screen">
+    <div class="screen-label"><span class="screen-num">2</span><h2>메인 / 검색</h2><span class="tag">AI ① RAG 의미검색 + 검색/페이징</span></div>
+    <div class="frame">
+      <div class="row" style="justify-content:space-between; padding:14px 18px; border-bottom:1.5px solid var(--border2); background:var(--surface2);">
+        <div class="row" style="gap:10px;">
+          <div style="width:30px;height:30px;border-radius:7px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;"><i class="ti ti-puzzle" style="font-size:17px;color:var(--text2);"></i></div>
+          <span style="font-size:15px;font-weight:500;">Extendly</span><span class="hint">[로고]</span>
+        </div>
+        <div class="row" style="gap:14px;">
+          <span style="font-size:13px;color:var(--text2);">둘러보기</span>
+          <span style="font-size:13px;color:var(--text2);">등록하기</span>
+          <div style="width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border2);"></div>
+          <span class="hint">[GNB / 로그인]</span>
+        </div>
+      </div>
+      <div style="padding:28px 18px; text-align:center; border-bottom:1.5px dashed var(--border3);">
+        <div style="display:inline-block;width:60%;height:20px;" class="box2"></div>
+        <div class="hint" style="margin:8px 0 18px;">[서비스 한 줄 슬로건]</div>
+        <div style="max-width:480px;margin:0 auto;display:flex;gap:8px;align-items:center;padding:8px;border:1.5px solid var(--border2);border-radius:var(--radius-lg);">
+          <i class="ti ti-sparkles" style="font-size:18px;color:var(--text3);"></i>
+          <span style="flex:1;text-align:left;font-size:13px;color:var(--text3);">자연어 검색 입력창 — "필요한 기능을 문장으로"</span>
+          <div style="padding:7px 16px;border:1.5px solid var(--border2);border-radius:var(--radius-md);font-size:12px;">찾기</div>
+        </div>
+        <div class="hint" style="margin-top:8px;">↑ RAG 의미검색 (필수 AI 기능 ①)</div>
+        <div class="row" style="gap:6px;justify-content:center;margin-top:14px;">
+          <span class="chip">Chrome</span><span class="chip">Obsidian</span><span class="chip">VS Code</span>
+          <span class="hint" style="align-self:center;">[플랫폼 필터]</span>
+        </div>
+      </div>
+      <div class="pad">
+        <div class="row" style="justify-content:space-between;margin-bottom:12px;">
+          <span style="font-size:13px;font-weight:500;">익스텐션 목록 / 검색 결과</span>
+          <span class="hint" style="padding:4px 10px;border:1.5px solid var(--border3);border-radius:var(--radius-md);">정렬 ▾ (인기 / 최신 / 일치율)</span>
+        </div>
+        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));">
+          <!-- card x3 -->
+          <div class="frame pad" style="border-color:var(--border2);">
+            <div class="row" style="gap:10px;margin-bottom:10px;"><div style="width:34px;height:34px;border-radius:8px;" class="box2"></div><div style="flex:1;"><div class="box2" style="height:11px;width:75%;margin-bottom:5px;"></div><div class="box2" style="height:8px;width:45%;"></div></div></div>
+            <div class="box2" style="height:8px;width:100%;margin-bottom:5px;"></div><div class="box2" style="height:8px;width:80%;margin-bottom:12px;"></div>
+            <div class="row" style="justify-content:space-between;"><span class="hint">★ 평점 · 플랫폼</span><span class="chip" style="padding:3px 9px;border-radius:11px;">N% 일치</span></div>
+          </div>
+          <div class="frame pad" style="border-color:var(--border2);">
+            <div class="row" style="gap:10px;margin-bottom:10px;"><div style="width:34px;height:34px;border-radius:8px;" class="box2"></div><div style="flex:1;"><div class="box2" style="height:11px;width:70%;margin-bottom:5px;"></div><div class="box2" style="height:8px;width:50%;"></div></div></div>
+            <div class="box2" style="height:8px;width:100%;margin-bottom:5px;"></div><div class="box2" style="height:8px;width:85%;margin-bottom:12px;"></div>
+            <div class="row" style="justify-content:space-between;"><span class="hint">★ 평점 · 플랫폼</span><span class="chip" style="padding:3px 9px;border-radius:11px;">N% 일치</span></div>
+          </div>
+          <div class="frame pad" style="border-color:var(--border2);">
+            <div class="row" style="gap:10px;margin-bottom:10px;"><div style="width:34px;height:34px;border-radius:8px;" class="box2"></div><div style="flex:1;"><div class="box2" style="height:11px;width:80%;margin-bottom:5px;"></div><div class="box2" style="height:8px;width:40%;"></div></div></div>
+            <div class="box2" style="height:8px;width:100%;margin-bottom:5px;"></div><div class="box2" style="height:8px;width:75%;margin-bottom:12px;"></div>
+            <div class="row" style="justify-content:space-between;"><span class="hint">★ 평점 · 플랫폼</span><span class="chip" style="padding:3px 9px;border-radius:11px;">N% 일치</span></div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:16px;"><span class="hint" style="padding:6px 14px;border:1.5px solid var(--border3);border-radius:var(--radius-md);">‹ 1 2 3 … › [페이징]</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. DETAIL -->
+  <div class="screen">
+    <div class="screen-label"><span class="screen-num">3</span><h2>익스텐션 상세</h2><span class="tag">AI ② MCP 자동수집 + 게시물/태그/댓글</span></div>
+    <div class="frame pad">
+      <div class="hint" style="margin-bottom:14px;">← 목록으로 · [익스텐션 상세]</div>
+      <div class="row" style="gap:14px;align-items:flex-start;margin-bottom:8px;">
+        <div style="width:56px;height:56px;border-radius:12px;flex-shrink:0;" class="box2"></div>
+        <div style="flex:1;">
+          <div class="box2" style="height:16px;width:50%;margin-bottom:8px;"></div>
+          <div class="row" style="gap:8px;font-size:11px;color:var(--text3);"><span>플랫폼: Obsidian</span><span>·</span><span>★ 4.8</span><span>·</span><span>작성자</span></div>
+        </div>
+        <div class="btn" style="padding:8px 16px;font-size:12px;">원본 링크 ↗</div>
+      </div>
+      <div class="grid" style="grid-template-columns:1.6fr 1fr;margin-top:14px;">
+        <div>
+          <div class="lbl">설명 / 본문</div>
+          <div class="box2" style="height:9px;width:100%;margin-bottom:6px;"></div>
+          <div class="box2" style="height:9px;width:95%;margin-bottom:6px;"></div>
+          <div class="box2" style="height:9px;width:88%;margin-bottom:6px;"></div>
+          <div class="box2" style="height:9px;width:70%;margin-bottom:14px;"></div>
+          <div class="lbl">태그</div>
+          <div class="row" style="gap:6px;"><span class="chip" style="padding:3px 11px;border-radius:12px;">#자동화</span><span class="chip" style="padding:3px 11px;border-radius:12px;">#날씨</span><span class="chip" style="padding:3px 11px;border-radius:12px;">#API</span></div>
+        </div>
+        <div class="dashed pad">
+          <div class="hint" style="margin-bottom:10px;"><i class="ti ti-bolt" style="font-size:13px;vertical-align:-2px;"></i> MCP 자동수집 (AI 기능 ②)</div>
+          <div class="row" style="justify-content:space-between;font-size:12px;margin-bottom:8px;"><span style="color:var(--text2);">다운로드</span><span>12.4k</span></div>
+          <div class="row" style="justify-content:space-between;font-size:12px;margin-bottom:8px;"><span style="color:var(--text2);">최종 업데이트</span><span>2026.05</span></div>
+          <div class="row" style="justify-content:space-between;font-size:12px;margin-bottom:8px;"><span style="color:var(--text2);">버전</span><span>v2.1.0</span></div>
+          <div class="row" style="justify-content:space-between;font-size:12px;"><span style="color:var(--text2);">GitHub ★</span><span>820</span></div>
+        </div>
+      </div>
+      <div style="margin-top:18px;padding-top:14px;border-top:1.5px solid var(--border3);">
+        <div class="lbl">댓글 (필수)</div>
+        <div class="ph" style="margin-bottom:12px;display:flex;align-items:center;padding:0 12px;"><span class="hint">댓글 입력…</span></div>
+        <div class="row" style="gap:10px;margin-bottom:10px;"><div style="width:28px;height:28px;border-radius:50%;flex-shrink:0;" class="box2"></div><div style="flex:1;"><div class="box2" style="height:8px;width:30%;margin-bottom:5px;"></div><div class="box2" style="height:8px;width:80%;"></div></div></div>
+        <div class="row" style="gap:10px;"><div style="width:28px;height:28px;border-radius:50%;flex-shrink:0;" class="box2"></div><div style="flex:1;"><div class="box2" style="height:8px;width:25%;margin-bottom:5px;"></div><div class="box2" style="height:8px;width:65%;"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. CREATE -->
+  <div class="screen">
+    <div class="screen-label"><span class="screen-num">4</span><h2>글 등록 / 작성</h2><span class="tag">AI ② URL→MCP 자동채움 + CRUD</span></div>
+    <div class="frame pad">
+      <div class="hint" style="margin-bottom:14px;">[익스텐션 등록]</div>
+      <div style="font-size:15px;font-weight:500;margin-bottom:16px;">새 익스텐션 등록</div>
+      <div class="lbl">원본 URL 붙여넣기</div>
+      <div class="row" style="gap:8px;margin-bottom:6px;">
+        <div class="ph" style="flex:1;display:flex;align-items:center;padding:0 12px;"><span class="hint">github.com/... 또는 스토어 URL</span></div>
+        <div class="btn" style="padding:0 16px;height:34px;">불러오기</div>
+      </div>
+      <div class="hint" style="margin-bottom:16px;"><i class="ti ti-bolt" style="font-size:12px;vertical-align:-2px;"></i> ↑ MCP가 이름·아이콘·별점·버전 자동 채움 (AI 기능 ②)</div>
+      <div class="dashed pad" style="margin-bottom:16px;">
+        <div class="hint" style="margin-bottom:10px;">자동 채워진 미리보기</div>
+        <div class="row" style="gap:10px;"><div style="width:34px;height:34px;border-radius:8px;" class="box2"></div><div style="flex:1;"><div class="box2" style="height:10px;width:55%;margin-bottom:5px;"></div><div class="box2" style="height:8px;width:35%;"></div></div></div>
+      </div>
+      <div class="lbl">제목 / 설명 (수정 가능)</div>
+      <div class="ph" style="margin-bottom:10px;"></div>
+      <div class="ph" style="height:70px;margin-bottom:12px;"></div>
+      <div class="lbl">플랫폼 선택 / 태그</div>
+      <div class="row" style="gap:8px;margin-bottom:18px;">
+        <div class="ph" style="flex:1;display:flex;align-items:center;padding:0 12px;"><span class="hint">플랫폼 ▾</span></div>
+        <div class="ph" style="flex:2;display:flex;align-items:center;padding:0 12px;"><span class="hint">태그 입력 (#자동, #날씨…)</span></div>
+      </div>
+      <div class="row" style="gap:8px;justify-content:flex-end;">
+        <div style="padding:9px 18px;border:1.5px solid var(--border3);border-radius:var(--radius-md);font-size:13px;color:var(--text2);">취소</div>
+        <div class="btn" style="padding:9px 18px;font-size:13px;">등록</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. AGENT -->
+  <div class="screen">
+    <div class="screen-label"><span class="screen-num">5</span><h2>AI 큐레이터 (Agent)</h2><span class="tag">AI ③ 추론 루프 추천</span></div>
+    <div class="frame pad">
+      <div class="hint" style="margin-bottom:14px;">[AI 큐레이터 · Agent]</div>
+      <div class="ph" style="height:38px;display:flex;align-items:center;padding:0 14px;gap:10px;margin-bottom:6px;">
+        <i class="ti ti-message-chatbot" style="font-size:17px;color:var(--text3);"></i>
+        <span style="flex:1;font-size:12px;color:var(--text3);">"나 블로그 쓰는 개발자인데 글쓰기 워크플로우 도와줄 익스텐션 추천해줘"</span>
+        <span style="font-size:12px;color:var(--text2);">전송</span>
+      </div>
+      <div class="hint" style="margin-bottom:16px;">↑ 사용자 요청 (자연어 목표)</div>
+      <div class="dashed pad" style="margin-bottom:16px;">
+        <div class="hint" style="margin-bottom:12px;"><i class="ti ti-refresh" style="font-size:13px;vertical-align:-2px;"></i> 에이전트 추론 루프 (도구 선택 과정 표시)</div>
+        <div class="row" style="gap:10px;margin-bottom:8px;"><div style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;">1</div><span style="font-size:12px;color:var(--text2);">RAG로 유사 익스텐션 검색 중…</span></div>
+        <div class="row" style="gap:10px;margin-bottom:8px;"><div style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;">2</div><span style="font-size:12px;color:var(--text2);">MCP로 GitHub 최신 버전·활성도 조회 중…</span></div>
+        <div class="row" style="gap:10px;"><div style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;">3</div><span style="font-size:12px;color:var(--text2);">조합해서 추천 셋 구성 중…</span></div>
+      </div>
+      <div class="lbl">추천 결과 (이유와 함께)</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="frame" style="border-color:var(--border2);padding:12px;display:flex;gap:10px;align-items:center;"><div style="width:30px;height:30px;border-radius:7px;" class="box2"></div><div style="flex:1;"><div class="box2" style="height:9px;width:40%;margin-bottom:5px;"></div><div class="box2" style="height:7px;width:75%;"></div></div><span style="font-size:10px;color:var(--text3);">추천 이유 ↗</span></div>
+        <div class="frame" style="border-color:var(--border2);padding:12px;display:flex;gap:10px;align-items:center;"><div style="width:30px;height:30px;border-radius:7px;" class="box2"></div><div style="flex:1;"><div class="box2" style="height:9px;width:45%;margin-bottom:5px;"></div><div class="box2" style="height:7px;width:70%;"></div></div><span style="font-size:10px;color:var(--text3);">추천 이유 ↗</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. MYPAGE -->
+  <div class="screen">
+    <div class="screen-label"><span class="screen-num">6</span><h2>마이페이지</h2><span class="tag">CRUD · 내 글/댓글/북마크</span></div>
+    <div class="frame pad">
+      <div class="hint" style="margin-bottom:14px;">[마이페이지]</div>
+      <div class="row" style="gap:14px;margin-bottom:18px;padding-bottom:14px;border-bottom:1.5px solid var(--border3);">
+        <div style="width:48px;height:48px;border-radius:50%;" class="box2"></div>
+        <div style="flex:1;"><div class="box2" style="height:12px;width:30%;margin-bottom:6px;"></div><div class="box2" style="height:8px;width:45%;"></div></div>
+        <div style="padding:7px 14px;border:1.5px solid var(--border3);border-radius:var(--radius-md);font-size:12px;color:var(--text2);">프로필 수정</div>
+      </div>
+      <div class="row" style="gap:18px;margin-bottom:16px;font-size:12px;">
+        <span style="padding-bottom:6px;border-bottom:2px solid var(--border2);">내가 등록한 익스텐션</span>
+        <span style="color:var(--text3);">작성한 댓글</span>
+        <span style="color:var(--text3);">북마크</span>
+      </div>
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));">
+        <div class="frame" style="border-color:var(--border2);padding:12px;display:flex;gap:10px;align-items:center;"><div style="width:30px;height:30px;border-radius:7px;" class="box2"></div><div style="flex:1;"><div class="box2" style="height:9px;width:70%;margin-bottom:5px;"></div><div class="box2" style="height:7px;width:40%;"></div></div><i class="ti ti-dots" style="font-size:15px;color:var(--text3);"></i></div>
+        <div class="frame" style="border-color:var(--border2);padding:12px;display:flex;gap:10px;align-items:center;"><div style="width:30px;height:30px;border-radius:7px;" class="box2"></div><div style="flex:1;"><div class="box2" style="height:9px;width:60%;margin-bottom:5px;"></div><div class="box2" style="height:7px;width:45%;"></div></div><i class="ti ti-dots" style="font-size:15px;color:var(--text3);"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAPPING TABLE -->
+  <div class="screen">
+    <div class="screen-label"><span class="screen-num" style="font-size:11px;"><i class="ti ti-list-check"></i></span><h2>과제 요구사항 매핑</h2></div>
+    <table>
+      <thead><tr><th>#</th><th>페이지</th><th>핵심 기능</th><th>과제 매핑</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>로그인/회원가입</td><td>JWT·Argon2 인증</td><td>게시판 필수(회원)</td></tr>
+        <tr><td>2</td><td>메인/검색</td><td>자연어 RAG 검색 + 결과</td><td>AI ① + 검색/페이징</td></tr>
+        <tr><td>3</td><td>익스텐션 상세</td><td>본문·태그·댓글 + MCP 자동수집</td><td>AI ② + 게시물/댓글</td></tr>
+        <tr><td>4</td><td>글 등록</td><td>URL→MCP 자동 채움</td><td>AI ② + 게시물 CRUD</td></tr>
+        <tr><td>5</td><td>AI 큐레이터</td><td>Agent 추론 루프 추천</td><td>AI ③</td></tr>
+        <tr><td>6</td><td>마이페이지</td><td>내 글/댓글/북마크 관리</td><td>게시물 CRUD</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>

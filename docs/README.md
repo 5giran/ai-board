@@ -1,10 +1,16 @@
 # AI Board 학습 가이드
 
-이 문서는 AI 게시판 과제를 구현하면서 React, NestJS, TypeORM, PostgreSQL, RAG, MCP, Agent를 차례대로 익히기 위한 학습 로드맵입니다.
+이 문서는 Extendly 익스텐션 아카이브 과제를 구현하면서 React, NestJS, TypeORM, PostgreSQL, RAG, MCP, Agent를 차례대로 익히기 위한 학습 로드맵입니다.
 
 핵심 원칙은 하나입니다.
 
 > 환경과 방향은 가이드가 잡고, 실제 도메인 구현은 직접 손으로 만든다.
+
+## 구현 기준 문서
+
+- [Extendly 제품 명세](./product/extendly_spec.md)
+- [Extendly UI/UX 구현 지시서](./product/extendly_codex_ui_spec.md)
+- [Extendly 와이어프레임](./wireframes/extendly_wireframes.html)
 
 ## 읽는 순서
 
@@ -13,17 +19,17 @@
 3. [01. Users 모듈 만들기](./chapters/01-users-module.md)
 4. [02. User Entity와 migration](./chapters/02-user-entity-migration.md)
 5. [03. 회원가입과 로그인](./chapters/03-auth-signup-login.md)
-6. [04. 게시글 CRUD API](./chapters/04-posts-crud-api.md)
-7. [05. 댓글, 태그, 검색, 페이징](./chapters/05-comments-tags-search-pagination.md)
-8. [06. React 기초 체력](./chapters/06-react-foundation.md)
-9. [07. React 라우팅과 레이아웃](./chapters/07-react-routing-layout.md)
-10. [08. React 서버 상태](./chapters/08-react-server-state.md)
-11. [09. React 폼과 인증 흐름](./chapters/09-react-forms-auth.md)
-12. [10. React 게시글 화면 흐름](./chapters/10-react-posts-flow.md)
-13. [11. React UI 품질](./chapters/11-react-ui-quality.md)
-14. [12. RAG 기능](./chapters/12-rag-feature.md)
-15. [13. MCP 기능](./chapters/13-mcp-feature.md)
-16. [14. Agent 기능](./chapters/14-agent-feature.md)
+6. [04. Extensions CRUD API](./chapters/04-extensions-crud-api.md)
+7. [05. Extension 댓글, 태그, 북마크, 검색, 페이징](./chapters/05-extension-comments-tags-search-pagination.md)
+8. [06. React 기초 체력: Extendly 화면 쪼개기](./chapters/06-react-foundation.md)
+9. [07. React 라우팅과 레이아웃: Extendly 화면 구조](./chapters/07-react-routing-layout.md)
+10. [08. React 서버 상태: Extendly API 연결](./chapters/08-react-server-state.md)
+11. [09. React 폼과 인증 흐름: 로그인, 회원가입, 보호 화면](./chapters/09-react-forms-auth.md)
+12. [10. React Extendly 화면 흐름](./chapters/10-react-extendly-flow.md)
+13. [11. Extendly UI 품질](./chapters/11-react-ui-quality.md)
+14. [12. RAG 자연어 익스텐션 검색](./chapters/12-rag-feature.md)
+15. [13. MCP 원본 URL 메타데이터 자동수집](./chapters/13-mcp-feature.md)
+16. [14. Agent AI 큐레이터](./chapters/14-agent-feature.md)
 17. [15. 데모, README, 회고](./chapters/15-demo-readme-retrospective.md)
 
 매 챕터를 끝낼 때는 [진행 기록 템플릿](./progress-template.md)을 채워서 공유합니다.

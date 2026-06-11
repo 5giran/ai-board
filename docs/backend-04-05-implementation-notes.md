@@ -1,5 +1,7 @@
 # Backend 04-05 Implementation Notes
 
+> **주의**: 이 문서는 이전 `posts` 기반 구현을 설명하는 기록입니다. Extendly 최종 구현 기준은 [04. Extensions CRUD API](./chapters/04-extensions-crud-api.md)와 [05. Extension 댓글, 태그, 북마크, 검색, 페이징](./chapters/05-extension-comments-tags-search-pagination.md)을 따릅니다. 현재 `posts` 코드는 NestJS 구조, ownership check, tags, comments, pagination 패턴을 참고하는 용도로만 사용하고, 실제 프론트 API 연결 전에는 `extensions` 기준으로 전환합니다.
+
 이 문서는 4장 Posts CRUD와 5장 Comments, Tags, Search, Pagination 구현을 나중에 다시 읽고 이해하기 위한 학습 노트입니다.
 
 목표는 "코드가 어디에 있는지"보다 "요청이 들어왔을 때 어떤 객체와 계층을 지나며 처리되는지"를 이해하는 것입니다.
