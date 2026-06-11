@@ -73,6 +73,24 @@ const suggestedQueries = [
   "웹 자료를 노트로 저장하고 싶어요",
   "커밋 메시지를 AI로 만들고 싶어요",
 ];
+
+type PlatformFilterValue =
+  | "All"
+  | "Chrome"
+  | "Obsidian"
+  | "VS Code"
+  | "Raycast"
+  | "Notion"
+
+const platformFilters: PlatformFilterValue[] = [
+  "All",
+  "Chrome",
+  "Obsidian",
+  "VS Code",
+  "Raycast",
+  "Notion",
+]
+
 // TODO: 여기까지
 
 // HomePage는 컴포넌트들을 순서대로 조립하는 부모 컴포넌트다.
@@ -81,6 +99,14 @@ const suggestedQueries = [
 function HomePage() {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [searchQuery, SetSearchQuery] = useState("");
+  const [selectedPlatform, setSelectedPlatform] = useState<PlatformFilterValue>("All")
+
+  const visibleExtensions =
+    selectedPlatform === "All"
+      ? mockExtensions
+      : mockExtensions.filter(
+        (extension) => extension.platform === selectedPlatform,
+      )
 
   return (
     <div>
@@ -92,7 +118,10 @@ function HomePage() {
         onQueryChange={SetSearchQuery}
       />
 
-      <FilterSection />
+      <FilterSection 
+        selectedPlatform={selectedPlatform}
+        onPlatformChange={setSelectedPlatform}
+      />
 
       <ViewToggle viewMode={viewMode} onChange={setViewMode} />
 
@@ -154,12 +183,48 @@ function SearchHero({
   );
 }
 
-function FilterSection() {
+type FilterSectionProps = {
+  selectedPlatform: PlatformFilterValue
+  onPlatformChange: (platform: PlatformFilterValue) => void
+}
+
+// FilterSection는 중간 부모
+function FilterSection({
+  selectedPlatform,
+  onPlatformChange,
+}: FilterSectionProps) {
   return (
     <section>
       <h2>FilterSection</h2>
+
+      <PlatformFilter 
+        selectedPlatform={selectedPlatform} 
+        onPlatformChange={onPlatformChange} 
+      />
     </section>
   );
+}
+
+// PlatformFilter이 자식
+type PlatformFilterProps = {
+  selectedPlatform: PlatformFilterValue
+  onPlatformChange: (platform: PlatformFilterValue) => void
+}
+
+function PlatformFilter({
+  selectedPlatform,
+  onPlatformChange,
+}: PlatformFilterProps) {
+  return (
+    <div>
+      {platformFilters.map((platform) => (
+        <button key={platform} type="button" onClick={() => onPlatformChange(platform)}>
+          {platform}
+          {selectedPlatform === platform ? " 선택됨" : ""}
+        </button>
+      ))}
+    </div>
+  )
 }
 
 // Grid 형태 컴포넌트
@@ -254,7 +319,7 @@ function ViewToggle({ viewMode, onChange }: ViewToggleProps) {
       </button>
 
       <button type="button" onClick={() => onChange("list")}>
-        Grid {viewMode === "list" ? "선택됨" : ""}
+        List {viewMode === "list" ? "선택됨" : ""}
       </button>
     </div>
   );
