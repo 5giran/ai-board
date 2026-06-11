@@ -241,6 +241,11 @@ function ExtensionListItem({ extension }: ExtensionListItemProps) {
   return (
     <article>
       <ExtensionInfo extension={extension} />
+
+      <p>Platform: {extension.platform}</p>
+      <p>Author: {extension.author}</p>
+      <p>Comments: {extension.commentCount}</p>
+      <p>Created: {extension.createdAt}</p>
     </article>
   )
 }
@@ -266,6 +271,5 @@ function ViewToggle({ viewMode, onChange }: ViewToggleProps) {
     </div>
   )
 }
-
 
 
