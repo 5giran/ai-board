@@ -6,6 +6,9 @@ import { AppService } from './app.service';
 import { createTypeOrmOptions } from './config/typeorm.config';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { PostsModule } from './posts/posts.module';
+import { CommentsModule } from './comments/comments.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { AuthModule } from './auth/auth.module';
     }),
     UsersModule,
     AuthModule,
+    TagsModule,
+    PostsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
