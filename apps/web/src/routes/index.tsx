@@ -126,9 +126,9 @@ function HomePage() {
       <ViewToggle viewMode={viewMode} onChange={setViewMode} />
 
       {viewMode === "grid" ? (
-        <ExtensionGrid extensions={mockExtensions} />
+        <ExtensionGrid extensions={visibleExtensions} />
       ) : (
-        <ExtensionBoard extensions={mockExtensions} />
+        <ExtensionBoard extensions={visibleExtensions} />
       )}
     </div>
   );
@@ -227,6 +227,21 @@ function PlatformFilter({
   )
 }
 
+// 중복 JSX 분리
+type ExtensionInfoProps = {
+  extension: ExtensionSummary;
+};
+
+function ExtensionInfo({ extension }: ExtensionInfoProps) {
+  return (
+    <>
+      <h3>{extension.name}</h3>
+      <p>{extension.provider}</p>
+      <p>{extension.description}</p>
+    </>
+  );
+}
+
 // Grid 형태 컴포넌트
 // ExtensionGrid라는 컴포넌트는 props로 extensions라는 값을 받을 건데, 그건 ExtensionSummary 여러 개가 들어있는 배열이다.
 type ExtensionGridProps = {
@@ -262,9 +277,7 @@ type ExtensionCardProps = {
 function ExtensionCard({ extension }: ExtensionCardProps) {
   return (
     <article>
-      <h3>{extension.name}</h3>
-      <p>{extension.provider}</p>
-      <p>{extension.description}</p>
+      <ExtensionInfo extension={extension} />
     </article>
   );
 }
@@ -296,9 +309,7 @@ type ExtensionListItemProps = {
 function ExtensionListItem({ extension }: ExtensionListItemProps) {
   return (
     <article>
-      <h3>{extension.name}</h3>
-      <p>{extension.provider}</p>
-      <p>{extension.description}</p>
+      <ExtensionInfo extension={extension} />
     </article>
   );
 }
