@@ -20,7 +20,7 @@
 
 | URL | 화면 | 핵심 상태 |
 |---|---|---|
-| `/` | 메인 / 검색 | `q`, `platform`, `sort`, `page`, `mode` |
+| `/` | 메인 / 검색 | `q`, `platform`, `sort`, `page`, `view` |
 | `/login` | 로그인 | redirect |
 | `/signup` | 회원가입 | redirect |
 | `/extensions/:extensionId` | 익스텐션 상세 | route param |
@@ -37,7 +37,7 @@
 - AI 큐레이터 route
 - 로그인/회원가입 route
 - 마이페이지 route
-- 검색어, 플랫폼, 정렬, 페이지 번호를 search params로 관리
+- 검색어, 플랫폼, 정렬, 페이지 번호, 카드/목록 view를 search params로 관리할지 결정
 
 ## 구현 전에 스스로 답할 질문
 
@@ -47,16 +47,17 @@
 - URL에 상태를 남기면 사용자가 얻는 이점은 무엇일까?
 - `/extensions/new`와 `/me`는 로그인하지 않은 사용자가 접근하면 어떻게 처리할까?
 - 자연어 RAG 검색 결과와 일반 키워드 검색 결과를 URL에서 어떻게 구분할까?
+- 카드 뷰와 목록 뷰 선택은 공유 가능한 URL 상태일까, 화면 안 local state일까?
 
 ## 단계별 실습 과제
 
 1. `__root.tsx`에 앱 공통 layout을 만든다.
-2. root layout에 `AppHeader`를 배치한다. 단, 로그인/회원가입 화면에서 header를 그대로 둘지 별도 auth shell을 둘지 결정한다.
+2. root layout에 `AppHeader`를 배치한다. 단, 로그인/회원가입 화면에서는 UI 지시서에 맞춰 header를 숨기고 별도 auth shell을 쓴다.
 3. `/` route를 메인/검색 화면으로 만든다.
 4. `/extensions/$extensionId` 상세 route를 만든다.
 5. `/extensions/new` 등록 route를 만든다.
 6. `/curator`, `/login`, `/signup`, `/me` route를 만든다.
-7. 메인 route에서 `q`, `platform`, `sort`, `page`, `mode` search params 계획을 세운다.
+7. 메인 route에서 `q`, `platform`, `sort`, `page`, `view` search params 계획을 세운다.
 8. 마이페이지 route에서 `tab` search param을 쓸지 local state를 쓸지 결정한다.
 9. route 이동에 `Link`를 사용한다.
 
@@ -67,6 +68,7 @@
 - 힌트 3: route 파일은 URL 구조를 드러내므로 이름을 신중히 짓는다.
 - 힌트 4: 검색 입력 중인 임시 값은 local state, 실제 적용된 검색 조건은 search params에 두면 편하다.
 - 힌트 5: 인증이 필요한 route는 UI만 막지 말고 API 호출 실패까지 고려한다.
+- 힌트 6: `view=grid|list`는 API 요청 조건이 아니라 표현 상태다. URL에 넣더라도 query key에는 꼭 필요한지 따로 판단한다.
 
 ## 검증 명령과 성공 기준
 
@@ -81,6 +83,7 @@ pnpm --filter web lint
 - Link로 페이지 이동이 된다.
 - route params와 search params의 차이를 설명할 수 있다.
 - 검색 조건을 바꾸면 URL이 함께 바뀐다.
+- 카드/목록 view 선택을 URL 또는 local state 중 어디에 두었는지 설명할 수 있다.
 - 상세 페이지 URL에서 `extensionId`를 읽어 화면에 사용할 수 있다.
 
 ## 나에게 공유할 내용

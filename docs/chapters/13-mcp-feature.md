@@ -21,10 +21,11 @@
 - 1차 외부 서비스: GitHub API
 - JSON-RPC method: `fetchExtensionMetadata`
 - 입력: `{ url }`
-- 출력: title, iconUrl, platform, description, rating, version, license, isMcpVerified, metadata
+- 출력: title, iconUrl, platform, description, rating, version, license, isMcpVerified, metadata(downloads, stars, source, compatibility, permissions, fetchedAt)
 - NestJS endpoint: `POST /ai/fetch-metadata`
 - 저장 위치: `Extension` 개별 컬럼과 `metadata` jsonb
 - 사용자 경험: 자동수집 실패 시 수기 입력 fallback 제공
+- UI 표시: 등록 preview는 불러오기 전/로딩/성공/실패 상태를 분리하고, 상세 MCP 패널에는 권한/호환성/수집 시각/새로고침을 표시
 
 ## 직접 구현할 파일/기능
 
@@ -35,7 +36,7 @@
 - API key 관리 전략
 - 외부 응답을 Extendly metadata schema로 정규화
 - 등록 페이지 자동 채움 preview와 연결
-- 상세 페이지 MCP 수집 정보 panel과 연결
+- 상세 페이지 `수집된 정보` panel과 연결
 
 ## 구현 전에 스스로 답할 질문
 
@@ -45,6 +46,7 @@
 - MCP tool 실패 시 등록 기능은 어떻게 반응해야 할까?
 - Chrome Web Store, VS Code Marketplace, Notion 같은 추가 소스는 나중에 어떻게 확장할까?
 - `metadata` jsonb에 넣을 값과 개별 컬럼으로 승격할 값의 기준은 무엇일까?
+- 상세 패널에서 사용자가 신뢰 판단을 하려면 어떤 metadata가 반드시 보여야 할까?
 
 ## 단계별 실습 과제
 
@@ -57,7 +59,8 @@
 7. NestJS `POST /ai/fetch-metadata`에서 MCP tool을 호출하게 연결한다.
 8. 등록 페이지에서 응답을 자동 채움 preview와 form draft에 반영한다.
 9. 실패 응답, rate limit, timeout 처리를 설계한다.
-10. 상세 페이지의 `MCP 수집 정보` panel에 저장된 metadata를 표시한다.
+10. preview 패널에 불러오기 전, 로딩 skeleton, 성공, 실패 상태를 분리한다.
+11. 상세 페이지의 `수집된 정보` panel에 저장된 metadata와 `정보 새로고침` 액션을 표시한다.
 
 ## 힌트
 
@@ -66,6 +69,7 @@
 - 힌트 3: 외부 서비스 응답을 그대로 노출하지 말고 익스텐션 등록에 필요한 모양으로 정리한다.
 - 힌트 4: API key와 token은 서버 환경변수에 두고 브라우저로 내려보내지 않는다.
 - 힌트 5: 자동수집에 실패해도 사용자가 직접 제목, 설명, 플랫폼, 원본 링크를 입력할 수 있어야 한다.
+- 힌트 6: permissions와 compatibility는 사용자가 설치 전 위험을 판단하는 정보이므로 다운로드 수보다 작아도 빠지면 안 된다.
 
 ## 검증 명령과 성공 기준
 
@@ -79,8 +83,8 @@ pnpm --filter api build
 - JSON-RPC 요청과 응답 예시를 README에 설명할 수 있다.
 - API key 관리 방식을 설명할 수 있다.
 - 실패 시 error 응답이 예측 가능하다.
-- 등록 화면에서 자동 채움 성공/실패 UI가 동작한다.
-- 상세 화면에서 다운로드, 최신 버전, 마지막 업데이트, GitHub stars, License, Source 같은 metadata를 표시할 수 있다.
+- 등록 화면에서 자동 채움의 불러오기 전/로딩/성공/실패 UI가 동작한다.
+- 상세 화면에서 다운로드, 최신 버전, 마지막 업데이트, GitHub stars, License, Source, Compatibility, Permissions, 수집 시각 같은 metadata를 표시할 수 있다.
 
 ## 나에게 공유할 내용
 

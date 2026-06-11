@@ -11,6 +11,9 @@
 - [Extendly 제품 명세](./product/extendly_spec.md)
 - [Extendly UI/UX 구현 지시서](./product/extendly_codex_ui_spec.md)
 - [Extendly 와이어프레임](./wireframes/extendly_wireframes.html)
+- [Extendly UI 레퍼런스 HTML](./wireframes/extendly_reference.html)
+
+구현할 때는 제품 명세로 데이터/API 범위를 확인하고, UI/UX 구현 지시서로 토큰·컴포넌트·문구 기준을 확인한 뒤, 와이어프레임과 UI 레퍼런스 HTML을 같이 열어 화면 구조와 실제 시각 기준을 대조합니다.
 
 ## 읽는 순서
 
@@ -38,6 +41,7 @@
 
 - 먼저 목표와 개념을 읽습니다.
 - 구현 전에 질문에 답해 봅니다.
+- 구현 기준 문서와 UI 레퍼런스를 체크합니다.
 - 실습 과제를 직접 구현합니다.
 - 막히면 힌트를 1번부터 순서대로 봅니다.
 - 검증 명령으로 결과를 확인합니다.

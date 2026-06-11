@@ -14,6 +14,7 @@
 - 인증된 사용자만 익스텐션을 등록, 수정, 삭제하게 한다.
 - CRUD API의 기본 흐름을 익힌다.
 - 이후 MCP, RAG, Agent가 붙을 수 있는 데이터 구조를 준비한다.
+- 메인 화면의 카드 뷰와 목록(게시판 보드) 뷰가 함께 쓸 목록 응답 shape를 준비한다.
 
 ## 먼저 이해할 개념
 
@@ -83,6 +84,8 @@
 
 MCP 자동수집으로 채워지는 `iconUrl`, `rating`, `version`, `license`, `metadata`, `isMcpVerified`는 13장에서 본격 연결한다. 04장에서는 필드와 DTO 확장 가능성만 열어 둔다.
 
+목록 응답의 각 item은 카드 뷰와 목록 뷰를 모두 지원해야 한다. 카드 뷰에는 `title`, `platform`, `rating`, `description`, `tags`, `isMcpVerified`가 필요하고, 목록(보드) 뷰에는 추가로 `author` 요약, `commentCount`, `createdAt`이 필요하다. `commentCount`는 05장에서 댓글 관계를 붙인 뒤 집계해도 된다.
+
 ## 구현 전에 스스로 답할 질문
 
 - 익스텐션의 `description`은 카드 한 줄 설명과 상세 본문을 함께 담당해도 될까?
@@ -92,6 +95,7 @@ MCP 자동수집으로 채워지는 `iconUrl`, `rating`, `version`, `license`, `
 - 글 수정 시 등록자 확인은 controller와 service 중 어디서 할까?
 - MCP 수집 필드는 사용자가 직접 수정할 수 있어야 할까?
 - `draft` 상태의 익스텐션은 목록 API에 노출할까?
+- 목록 뷰의 작성자, 댓글수, 등록일은 DB column과 relation 중 어디에서 가져와야 할까?
 
 ## 단계별 실습 과제
 
@@ -102,10 +106,11 @@ MCP 자동수집으로 채워지는 `iconUrl`, `rating`, `version`, `license`, `
 5. migration을 만든다.
 6. `POST /api/extensions`를 만든다.
 7. `GET /api/extensions`를 만든다.
-8. `GET /api/extensions/:id`를 만든다.
-9. `PATCH /api/extensions/:id`를 만든다.
-10. `DELETE /api/extensions/:id`를 만든다.
-11. 등록자만 수정/삭제 가능한지 확인한다.
+8. 목록 응답 item에 카드/보드 공통 필드와 `author`, `commentCount`, `createdAt`을 포함할 계획을 세운다.
+9. `GET /api/extensions/:id`를 만든다.
+10. `PATCH /api/extensions/:id`를 만든다.
+11. `DELETE /api/extensions/:id`를 만든다.
+12. 등록자만 수정/삭제 가능한지 확인한다.
 
 ## 기존 `posts` 구현에서 옮겨 쓸 것
 
@@ -118,7 +123,7 @@ MCP 자동수집으로 채워지는 `iconUrl`, `rating`, `version`, `license`, `
 ## 힌트
 
 - 힌트 1: Extension은 User와 `ManyToOne` 관계를 가진다.
-- 힌트 2: 목록 응답에는 상세 본문 전체보다 카드에 필요한 필드를 우선 보낸다.
+- 힌트 2: 목록 응답에는 상세 본문 전체보다 카드와 게시판 보드에 필요한 요약 필드를 우선 보낸다.
 - 힌트 3: 권한 확인은 service에서 DB 데이터와 현재 사용자를 비교하는 흐름이 자연스럽다.
 - 힌트 4: MCP/RAG 필드를 04장에서 모두 완성하려고 하지 말고, 13장과 12장에서 채울 hook을 남긴다.
 - 힌트 5: DTO field 이름은 프론트 mock data의 `ExtensionSummary`와 맞추면 API 연결이 쉬워진다.
@@ -136,6 +141,7 @@ pnpm --filter api test
 - 등록자는 자신의 익스텐션을 수정할 수 있다.
 - 다른 사용자는 수정/삭제할 수 없다.
 - 목록과 상세 응답의 차이를 설명할 수 있다.
+- 목록 응답 item이 카드 뷰와 목록 뷰에 필요한 필드를 모두 포함한다.
 - `/api/posts`가 아니라 `/api/extensions` 계약을 기준으로 프론트 API client를 설계할 수 있다.
 
 ## 나에게 공유할 내용

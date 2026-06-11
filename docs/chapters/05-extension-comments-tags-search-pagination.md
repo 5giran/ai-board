@@ -3,7 +3,7 @@
 ## 변경 메모: 어디를, 왜, 언제 고치는가
 
 - 어디를 고쳤나: 기존 게시글 하위 댓글/태그/검색 API를 익스텐션 하위 댓글, 익스텐션 태그, 플랫폼 필터, 북마크, 검색/페이징 API 기준으로 바꾼다.
-- 왜 고쳤나: Extendly UI는 익스텐션 상세의 댓글, 카드의 태그, 플랫폼 필터, 마이페이지 북마크 탭을 전제로 한다. 따라서 댓글과 태그도 `Post`가 아니라 `Extension`에 연결되어야 한다.
+- 왜 고쳤나: Extendly UI는 익스텐션 상세의 댓글, 카드의 태그, 플랫폼 필터, 마이페이지 북마크 탭, 메인 목록(게시판 보드)의 작성자/댓글수/등록일 컬럼을 전제로 한다. 따라서 댓글과 태그도 `Post`가 아니라 `Extension`에 연결되어야 한다.
 - 어느 시점에 고치나: 04장에서 `ExtensionEntity`가 생긴 직후 이어서 고친다. 이미 `CommentEntity.post` / `post_tags` 구현이 있다면, **프론트 상세 화면과 서버 상태를 실제 API에 연결하기 전** `CommentEntity.extension`, `extension_tags`, `/api/extensions/:id/comments`로 전환한다.
 - 무엇을 나중으로 미루나: RAG의 의미 기반 `matchScore` 정렬은 12장에서 구현한다. MCP로 채우는 downloads/stars 기반 인기 정렬은 13장 이후 정확도가 좋아진다. 05장에서는 일반 검색, 플랫폼 필터, 태그 필터, offset pagination을 먼저 안정화한다.
 
@@ -12,7 +12,7 @@
 - Extendly 필수 기능을 API 레벨에서 확장한다.
 - 댓글, 태그, 북마크, 검색, 페이징을 각각 분리해서 설계한다.
 - Query parameter를 다루는 법을 익힌다.
-- 프론트의 메인 검색, 상세 댓글, 마이페이지 탭이 기대하는 API shape를 준비한다.
+- 프론트의 메인 검색 카드 뷰/목록 뷰, 상세 댓글, 마이페이지 탭이 기대하는 API shape를 준비한다.
 
 ## 먼저 이해할 개념
 
@@ -54,11 +54,24 @@ GET /api/extensions?page=1&limit=12&q=github&platform=raycast&tag=productivity&s
 
 ```json
 {
-  "items": [],
+  "items": [
+    {
+      "id": "uuid",
+      "title": "Raycast GitHub",
+      "platform": "raycast",
+      "description": "GitHub issues, PR, notifications를 빠르게 확인하고 처리합니다.",
+      "tags": ["devtools", "github"],
+      "rating": 4.8,
+      "isMcpVerified": true,
+      "author": { "id": "uuid", "nickname": "raycast" },
+      "commentCount": 24,
+      "createdAt": "2026-05-21T09:00:00.000Z"
+    }
+  ],
   "page": 1,
   "limit": 12,
-  "total": 0,
-  "totalPages": 0
+  "total": 128,
+  "totalPages": 11
 }
 ```
 
@@ -71,6 +84,7 @@ GET /api/extensions?page=1&limit=12&q=github&platform=raycast&tag=productivity&s
 - platform 필터는 enum으로 검증할까?
 - 북마크 toggle은 POST 하나로 처리할까, POST/DELETE를 분리할까?
 - 페이지 번호 방식과 cursor 방식 중 지금 단계에는 무엇이 적절할까?
+- 목록 뷰의 `commentCount`는 join count로 즉시 계산할까, 별도 denormalized 컬럼으로 둘까?
 
 ## 단계별 실습 과제
 
@@ -86,6 +100,7 @@ GET /api/extensions?page=1&limit=12&q=github&platform=raycast&tag=productivity&s
 10. `GET /api/me/bookmarks`를 만든다.
 11. `GET /api/extensions?page=&limit=&q=&platform=&tag=&sort=` 형태의 목록 조회를 만든다.
 12. 응답에 `items`, `page`, `limit`, `total`, `totalPages`를 포함한다.
+13. 각 item에 목록(보드) 뷰용 `author`, `commentCount`, `createdAt`을 포함한다.
 
 ## 검색/필터/정렬 기준
 
@@ -95,6 +110,7 @@ GET /api/extensions?page=1&limit=12&q=github&platform=raycast&tag=productivity&s
 - `sort=recent`: `createdAt` 또는 `updatedAt` 최신순.
 - `sort=popular`: bookmarks, rating, downloads 중 현재 구현 가능한 값을 기준으로 한다. MCP 이전에는 bookmarks 또는 rating 우선으로 단순화해도 된다.
 - `sort=match`: 05장에서는 일반 검색 관련도 정도로만 처리하거나 지원하지 않아도 된다. 진짜 의미 기반 match score는 12장 RAG에서 구현한다.
+- UI의 `추천`, `인기`, `최신`, `북마크` 세그먼트는 API의 `match`, `popular`, `recent`, bookmark 기반 정렬로 매핑한다. 아직 추천/북마크 정렬을 구현하지 않았다면 disabled 또는 fallback 정렬을 명확히 표시한다.
 
 ## 기존 `posts` 구현에서 옮겨 쓸 것
 
@@ -108,7 +124,7 @@ GET /api/extensions?page=1&limit=12&q=github&platform=raycast&tag=productivity&s
 - 힌트 1: 댓글은 Extension, User와 각각 `ManyToOne` 관계를 가진다.
 - 힌트 2: 태그는 중복 생성을 막기 위해 unique 기준이 필요하다.
 - 힌트 3: 페이징은 처음에는 offset 방식으로 충분하다.
-- 힌트 4: 프론트 카드에 필요한 tags, bookmark count, rating, platform은 목록 응답에서 바로 쓰기 좋게 내려준다.
+- 힌트 4: 프론트 카드에 필요한 tags, bookmark count, rating, platform과 목록 보드에 필요한 author, commentCount, createdAt은 목록 응답에서 바로 쓰기 좋게 내려준다.
 - 힌트 5: 댓글 작성/삭제는 상세 페이지 query와 연결되므로 mutation 후 `['comments', extensionId]`를 갱신하기 쉽게 응답을 설계한다.
 
 ## 검증 명령과 성공 기준
@@ -125,6 +141,7 @@ pnpm --filter api test
 - platform 필터로 목록 결과가 줄어든다.
 - 검색어로 목록 결과가 줄어든다.
 - 페이징 meta가 응답에 포함된다.
+- 목록 응답 item에 작성자, 댓글수, 등록일이 포함되어 메인 목록 뷰를 만들 수 있다.
 - 북마크 toggle 후 내 북마크 목록에서 확인할 수 있다.
 - `CommentEntity`와 `TagEntity`가 `Post`가 아니라 `Extension`에 연결된다.
 

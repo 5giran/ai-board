@@ -63,9 +63,10 @@
 ### S2. 메인 / 검색 `/`
 - 상단 GNB: 로고, 둘러보기, 등록하기, 로그인/프로필
 - 히어로: 슬로건 + **자연어 검색 입력창** (RAG 진입점)
-- 플랫폼 필터 칩: Chrome / Obsidian / VS Code
-- 결과 영역: 정렬(인기/최신/일치율), 익스텐션 카드 그리드, 페이징
-- 카드 구성: 아이콘, 이름, 플랫폼, 평점, 한줄설명, **N% 일치(임베딩 유사도)**
+- 플랫폼 필터 칩: all / chrome / obsidian / vscode / raycast / notion
+- 결과 영역: 정렬(추천/인기/최신/북마크), **카드 뷰 ⇄ 목록 뷰 토글**, 페이징
+- **카드 뷰**: 아이콘, 이름, 플랫폼, 평점, 한줄설명, 태그, **N% 일치(임베딩 유사도)**, MCP 검증 배지
+- **목록 뷰(게시판 보드)**: 한 행에 제목·태그 / 플랫폼 / **작성자** / 평점 / **댓글수** / **등록일** — 전형적 게시판 목록 형태로, 과제의 "기본 게시판 기능"을 시각적으로 충족. 작성자·댓글수·등록일은 목록 뷰에서 노출.
 - 일반 검색과 RAG 검색을 UI에서 구분(일치율 노출 여부)
 
 ### S3. 익스텐션 상세 `/extensions/:id`
@@ -156,7 +157,7 @@
 - `POST /auth/refresh`
 
 ### Extensions
-- `GET /extensions` — query: page, sort(popular|recent|match), platform, q(키워드)
+- `GET /extensions` — query: page, sort(popular|recent|match), platform, q(키워드). 응답 각 항목은 목록(보드) 뷰를 위해 `author`(작성자), `commentCount`(댓글수 집계), `createdAt`(등록일)을 포함한다.
 - `GET /extensions/:id`
 - `POST /extensions` 🔒 — 등록
 - `PATCH /extensions/:id` 🔒

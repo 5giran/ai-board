@@ -38,6 +38,7 @@
 - 북마크 toggle mutation
 - RAG 검색, MCP 자동수집, Agent 큐레이터 요청
 - query invalidation
+- 카드/목록 뷰가 공유하는 `ExtensionSummary` 응답 타입
 
 ## 구현 전에 스스로 답할 질문
 
@@ -48,20 +49,22 @@
 - 자연어 검색 입력값은 서버 상태일까, 클라이언트 상태일까?
 - `POST /ai/search`는 query처럼 캐시할까, mutation처럼 실행할까?
 - 북마크 toggle 후 상세, 목록, 마이페이지 중 어떤 데이터를 갱신해야 할까?
+- 카드/목록 view 값은 서버 상태일까, 클라이언트 표현 상태일까?
 
 ## 단계별 실습 과제
 
 1. API 응답 타입을 정의한다.
-2. `fetchExtensions(params)` 함수를 만든다.
-3. 목록 페이지에서 `useQuery`를 사용한다.
-4. loading UI를 만든다.
-5. error UI를 만든다.
-6. 빈 목록 UI를 만든다.
-7. `fetchExtension(id)` 상세 query를 만든다.
-8. 댓글 query와 댓글 작성 mutation을 만든다.
-9. 작성 mutation 후 목록 query를 invalidation한다.
-10. 북마크 toggle 후 관련 query를 invalidation한다.
-11. `fetchMetadata(sourceUrl)`와 `curateExtensions(goal)`은 mutation으로 먼저 구현한다.
+2. `ExtensionSummary`에 카드 필드와 목록 뷰 필드(`author`, `commentCount`, `createdAt`)를 포함한다.
+3. `fetchExtensions(params)` 함수를 만든다.
+4. 목록 페이지에서 `useQuery`를 사용한다.
+5. loading UI를 만든다.
+6. error UI를 만든다.
+7. 빈 목록 UI를 만든다.
+8. `fetchExtension(id)` 상세 query를 만든다.
+9. 댓글 query와 댓글 작성 mutation을 만든다.
+10. 작성 mutation 후 목록 query를 invalidation한다.
+11. 북마크 toggle 후 관련 query를 invalidation한다.
+12. `fetchMetadata(sourceUrl)`와 `curateExtensions(goal)`은 mutation으로 먼저 구현한다.
 
 ## 힌트
 
@@ -70,6 +73,7 @@
 - 힌트 3: mutation은 성공 후 화면 이동과 캐시 갱신을 함께 고려한다.
 - 힌트 4: RAG 검색 결과에는 `matchScore`가 있으므로 일반 검색 결과와 타입을 구분하거나 optional 필드로 둔다.
 - 힌트 5: MCP 자동수집 결과는 바로 저장된 데이터가 아니라 등록 폼의 draft 값을 채우는 응답일 수 있다.
+- 힌트 6: `view`는 카드/목록 표현 상태라서 TanStack Query 캐시를 쪼개지 않아도 된다. 단, URL에 둔다면 page 컴포넌트에서만 읽어 표현을 바꾼다.
 
 ## 검증 명령과 성공 기준
 
@@ -85,6 +89,7 @@ pnpm --filter web lint
 - 데이터가 없을 때 빈 상태가 보인다.
 - mutation 이후 목록이 갱신된다.
 - 검색 조건이 query key에 반영된다.
+- 목록 응답 하나로 카드 뷰와 목록 뷰를 모두 렌더링할 수 있다.
 - AI 요청은 실행 중, 성공, 실패 상태가 구분된다.
 
 ## 나에게 공유할 내용

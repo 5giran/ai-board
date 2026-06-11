@@ -29,7 +29,7 @@
 - agent state와 step log
 - 최대 반복 횟수 제한
 - 실패 처리와 로그
-- 프론트 `/curator` 화면
+- 프론트 `/curator` 화면(command palette, scenario chips, agent progress timeline, recommendation groups)
 
 ## 구현 전에 스스로 답할 질문
 
@@ -40,6 +40,7 @@
 - 추천 결과는 “익스텐션 하나”가 아니라 “워크플로우 조합”으로 보여주는 것이 좋을까?
 - 사용자에게 공개해도 되는 step log와 숨겨야 하는 내부 추론은 어떻게 구분할까?
 - MCP 조회가 실패한 후보는 추천에서 제외할까, 낮은 신뢰도로 표시할까?
+- progress timeline의 done/active/wait 상태는 Agent 응답 상태와 어떻게 매핑할까?
 
 ## 단계별 실습 과제
 
@@ -52,7 +53,8 @@
 7. tool 실패와 LLM 실패를 각각 처리한다.
 8. 사용자에게 보여줄 step log를 남긴다.
 9. `POST /ai/curate` 응답에 `steps`와 `recommendations`를 포함한다.
-10. `/curator` 화면에 command input, 추천 시나리오 chips, progress panel, recommendation cards를 만든다.
+10. `/curator` 화면에 command palette, 추천 시나리오 chips, 좌측 sticky progress timeline, 우측 recommendation groups를 만든다.
+11. progress timeline은 `RAG 검색`, `MCP 조회`, `추천 조합 생성`을 done/active/wait 상태로 표시한다.
 
 ## 힌트
 
@@ -62,6 +64,7 @@
 - 힌트 4: UI에는 chain-of-thought가 아니라 `RAG 검색`, `MCP 조회`, `추천 조합 생성` 같은 안전한 진행 상태만 보여준다.
 - 힌트 5: 추천 이유는 “왜 이 목표에 맞는지”와 “어떤 단계에 쓰는지”를 중심으로 짧게 쓴다.
 - 힌트 6: Agent가 RAG와 MCP를 도구로 호출하는 의존 관계를 유지한다.
+- 힌트 7: 큐레이터 입력도 메인과 같은 `CommandPalette`를 공유하되 버튼 라벨과 kbd만 `추천 받기`, `⌘ ↵`로 바꾼다.
 
 ## 검증 명령과 성공 기준
 
@@ -77,7 +80,7 @@ pnpm --filter api test
 - 실패 시 사용자에게 이해 가능한 응답을 준다.
 - Agent 구조를 loop, state, tool, guard로 설명할 수 있다.
 - `POST /ai/curate`가 steps와 recommendations를 반환한다.
-- `/curator` 화면에서 실행 중, 성공, 실패 상태가 구분된다.
+- `/curator` 화면에서 실행 중, 성공, 실패 상태와 done/active/wait progress가 구분된다.
 
 ## 나에게 공유할 내용
 

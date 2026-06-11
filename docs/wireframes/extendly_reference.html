@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Extendly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --background:0 0% 100%; --foreground:240 10% 8%;
+    --card:0 0% 100%; --muted:240 5% 96%; --muted-foreground:240 4% 46%;
+    --border:240 6% 90%; --input:240 6% 90%; --ring:255 92% 67%;
+    --primary:240 10% 10%; --primary-foreground:0 0% 98%;
+    --accent:255 92% 67%; --accent-muted:255 100% 97%;
+    --success:142 52% 38%; --warning:35 80% 42%; --danger:0 72% 51%;
+    --radius:0.625rem; --surface-canvas:48 20% 98%;
+    --font-sans:'Inter',ui-sans-serif,system-ui,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box; border-color:hsl(var(--border));}
+  html{-webkit-font-smoothing:antialiased;}
+  body{margin:0; font-family:var(--font-sans); color:hsl(var(--foreground)); line-height:1.5; font-size:14px;
+    background:
+      radial-gradient(60rem 30rem at 78% -8%, hsl(255 92% 67% / .05), transparent 60%),
+      linear-gradient(hsl(240 6% 90% / .32) 1px, transparent 1px) 0 0 / 100% 56px,
+      hsl(var(--surface-canvas));}
+  a{color:inherit; text-decoration:none;}
+  input,textarea,select,button{font:inherit;}
+  [hidden]{display:none !important;}
+  .mono{font-family:var(--font-mono);}
+  .wrap{max-width:1160px; margin:0 auto; padding:0 28px;}
+
+  /* top bar */
+  .bar{position:sticky; top:0; z-index:30; background:hsl(var(--surface-canvas)/.82); backdrop-filter:blur(12px) saturate(1.2); border-bottom:1px solid hsl(var(--border));}
+  .bar-in{max-width:1160px; margin:0 auto; padding:0 28px; height:56px; display:flex; align-items:center; gap:22px;}
+  .logo{display:flex; align-items:center; gap:9px; font-weight:700; font-size:15px; letter-spacing:-.01em;}
+  .logo-mark{width:26px; height:26px; border-radius:7px; background:hsl(var(--primary)); color:#fff; display:grid; place-items:center; font-family:var(--font-mono); font-weight:700; font-size:13px;}
+  .logo-mark::after{content:"›";}
+  .nav{display:flex; gap:2px;}
+  .nav a{font-size:13px; font-weight:500; color:hsl(var(--muted-foreground)); padding:6px 11px; border-radius:7px; cursor:pointer;}
+  .nav a.on{color:hsl(var(--foreground)); background:hsl(var(--muted));}
+  .bar-r{margin-left:auto; display:flex; align-items:center; gap:8px;}
+
+  /* primitives */
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:6px; height:34px; padding:0 14px; border-radius:calc(var(--radius) - 2px); font-size:13px; font-weight:600; cursor:pointer; border:1px solid transparent; white-space:nowrap; transition:.14s;}
+  .btn-sm{height:30px; padding:0 11px; font-size:12.5px;}
+  .btn-lg{height:40px; padding:0 18px; font-size:14px;}
+  .btn-block{width:100%;}
+  .btn-primary{background:hsl(var(--primary)); color:hsl(var(--primary-foreground));}
+  .btn-primary:hover{background:hsl(240 10% 18%);}
+  .btn-accent{background:hsl(var(--accent)); color:#fff; box-shadow:0 1px 2px hsl(255 92% 40% / .25);}
+  .btn-accent:hover{background:hsl(255 88% 62%);}
+  .btn-outline{background:hsl(var(--card)); border-color:hsl(var(--border)); color:hsl(var(--foreground));}
+  .btn-outline:hover{background:hsl(var(--muted));}
+  .btn-ghost{background:transparent; color:hsl(var(--muted-foreground));}
+  .btn-ghost:hover{background:hsl(var(--muted)); color:hsl(var(--foreground));}
+  .btn:disabled{opacity:.5; cursor:not-allowed;}
+  .av{width:30px; height:30px; border-radius:8px; background:hsl(142 40% 92%); color:hsl(var(--success)); display:grid; place-items:center; font-family:var(--font-mono); font-weight:700; font-size:12px;}
+
+  .badge{display:inline-flex; align-items:center; gap:4px; height:21px; padding:0 8px; border-radius:6px; font-size:11.5px; font-weight:600; font-family:var(--font-mono);}
+  .badge-accent{background:hsl(var(--accent-muted)); color:hsl(255 70% 56%);}
+  .badge-muted{background:hsl(var(--muted)); color:hsl(var(--muted-foreground));}
+  .badge-success{background:hsl(142 40% 94%); color:hsl(var(--success));}
+  .badge-warning{background:hsl(35 90% 95%); color:hsl(var(--warning));}
+  .badge-danger{background:hsl(0 80% 96%); color:hsl(var(--danger));}
+  .badge-outline{border:1px solid hsl(var(--border)); color:hsl(var(--muted-foreground));}
+  .kbd{font-family:var(--font-mono); font-size:11px; font-weight:600; color:hsl(var(--muted-foreground)); background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-bottom-width:2px; border-radius:5px; padding:2px 6px; line-height:1;}
+
+  .card{background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:var(--radius);}
+  .label{display:block; font-size:12.5px; font-weight:600; color:hsl(var(--foreground)); margin-bottom:6px;}
+  .input{width:100%; height:38px; padding:0 12px; border:1px solid hsl(var(--input)); border-radius:calc(var(--radius) - 2px); background:hsl(var(--card)); font-size:14px; outline:none; transition:.14s;}
+  .input:focus{border-color:hsl(var(--accent)); box-shadow:0 0 0 3px hsl(var(--accent)/.12);}
+  textarea.input{height:auto; padding:10px 12px; resize:vertical;}
+  select.input{cursor:pointer;}
+  .field{margin-bottom:14px;}
+  .err{font-size:12px; color:hsl(var(--danger)); margin-top:5px;}
+
+  .page-pad{padding:34px 0 60px;}
+  .page-title{font-size:26px; font-weight:800; letter-spacing:-.02em; margin:0 0 4px;}
+  .page-sub{font-size:14px; color:hsl(var(--muted-foreground)); margin:0 0 24px;}
+
+  /* ============ AUTH ============ */
+  .auth-wrap{min-height:100vh; display:grid; grid-template-columns:1fr 1fr;}
+  .auth-aside{background:
+      radial-gradient(40rem 24rem at 30% 20%, hsl(255 92% 67% / .12), transparent 60%),
+      hsl(240 10% 10%); color:#fff; padding:48px; display:flex; flex-direction:column; justify-content:space-between;}
+  .auth-aside .logo{color:#fff; font-size:17px;}
+  .auth-aside .logo-mark{background:#fff; color:hsl(var(--primary));}
+  .auth-points{display:grid; gap:18px; max-width:380px;}
+  .auth-point{display:flex; gap:12px; align-items:flex-start;}
+  .auth-point .n{width:26px; height:26px; border-radius:7px; background:hsl(255 92% 67% / .2); color:#fff; display:grid; place-items:center; font-family:var(--font-mono); font-weight:700; font-size:12px; flex-shrink:0;}
+  .auth-point p{margin:0; font-size:14px; color:hsl(0 0% 100% / .8); line-height:1.5;}
+  .auth-point b{color:#fff; font-weight:600;}
+  .auth-foot{font-family:var(--font-mono); font-size:12px; color:hsl(0 0% 100% / .4);}
+  .auth-main{display:flex; align-items:center; justify-content:center; padding:32px;}
+  .auth-card{width:100%; max-width:380px;}
+  .auth-card h1{font-size:24px; font-weight:800; letter-spacing:-.02em; margin:0 0 6px;}
+  .auth-card .sub{font-size:14px; color:hsl(var(--muted-foreground)); margin:0 0 26px;}
+  .auth-switch{font-size:13px; color:hsl(var(--muted-foreground)); text-align:center; margin-top:20px;}
+  .auth-switch a{color:hsl(var(--accent)); font-weight:600;}
+  .divider-or{display:flex; align-items:center; gap:12px; margin:18px 0; color:hsl(var(--muted-foreground)); font-size:12px;}
+  .divider-or::before,.divider-or::after{content:""; flex:1; height:1px; background:hsl(var(--border));}
+
+  /* ============ HERO / MAIN ============ */
+  .hero{padding:52px 0 26px; max-width:760px;}
+  .eyebrow{display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:12px; font-weight:600; color:hsl(255 60% 56%); margin-bottom:18px;}
+  .eyebrow .dot{width:6px; height:6px; border-radius:50%; background:hsl(var(--accent)); box-shadow:0 0 0 3px hsl(var(--accent)/.18);}
+  h1.head{margin:0 0 14px; font-size:44px; line-height:1.04; letter-spacing:-.03em; font-weight:800;}
+  h1.head em{font-style:normal; color:hsl(var(--accent));}
+  .lede{margin:0 0 26px; font-size:16px; color:hsl(var(--muted-foreground)); max-width:520px;}
+  .cmd{background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:calc(var(--radius) + 2px); box-shadow:0 1px 0 hsl(240 10% 8% / .03), 0 12px 32px -12px hsl(240 10% 8% / .18); overflow:hidden; max-width:640px;}
+  .cmd-top{display:flex; align-items:center; gap:11px; padding:13px 14px;}
+  .cmd-chev{font-family:var(--font-mono); font-weight:700; color:hsl(var(--accent)); font-size:16px;}
+  .cmd-top input{flex:1; border:none; outline:none; background:transparent; font-size:15px; color:hsl(var(--foreground));}
+  .cmd-top input::placeholder{color:hsl(var(--muted-foreground));}
+  .cmd-foot{display:flex; align-items:center; gap:8px; padding:9px 14px; border-top:1px solid hsl(var(--border)); background:hsl(var(--muted)/.4);}
+  .cmd-hint{font-size:11.5px; color:hsl(var(--muted-foreground)); display:flex; align-items:center; gap:6px;}
+  .cmd-foot .spacer{margin-left:auto;}
+  .suggest{display:flex; flex-wrap:wrap; gap:7px; margin-top:16px;}
+  .suggest .s{font-size:12.5px; font-weight:500; color:hsl(var(--muted-foreground)); background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:999px; padding:5px 12px; cursor:pointer;}
+  .suggest .s:hover{border-color:hsl(var(--accent)/.5); color:hsl(var(--foreground));}
+  .suggest .s b{font-family:var(--font-mono); font-weight:600; color:hsl(255 60% 56%); margin-right:5px;}
+
+  .toolbar{display:flex; align-items:center; gap:14px; margin-top:36px; padding-bottom:13px; border-bottom:1px solid hsl(var(--border));}
+  .seg{display:inline-flex; background:hsl(var(--muted)); border-radius:9px; padding:3px;}
+  .seg a{font-size:12.5px; font-weight:600; color:hsl(var(--muted-foreground)); padding:5px 11px; border-radius:6px; cursor:pointer;}
+  .seg a.on{background:hsl(var(--card)); color:hsl(var(--foreground)); box-shadow:0 1px 2px hsl(240 10% 8% / .08);}
+  .plat{display:flex; gap:5px; margin-left:auto; flex-wrap:wrap;}
+  .plat a{font-family:var(--font-mono); font-size:12px; font-weight:500; color:hsl(var(--muted-foreground)); padding:5px 10px; border-radius:7px; cursor:pointer; border:1px solid transparent;}
+  .plat a:hover{background:hsl(var(--muted));}
+  .plat a.on{color:hsl(var(--foreground)); border-color:hsl(var(--border)); background:hsl(var(--card));}
+
+  .rhead{display:flex; align-items:baseline; justify-content:space-between; margin:22px 0 14px;}
+  .rhead .n{font-size:15px; font-weight:700;}
+  .rhead .n span{color:hsl(var(--muted-foreground)); font-weight:500;}
+  .rhead .q{font-family:var(--font-mono); font-size:12px; color:hsl(var(--muted-foreground)); margin-top:2px;}
+  .rhead-r{display:flex; align-items:center; gap:10px;}
+
+  /* view toggle */
+  .vtoggle{display:inline-flex; background:hsl(var(--muted)); border-radius:8px; padding:3px;}
+  .vtoggle button{display:inline-flex; align-items:center; gap:5px; border:none; background:transparent; cursor:pointer; font-size:12px; font-weight:600; font-family:var(--font-mono); color:hsl(var(--muted-foreground)); padding:5px 10px; border-radius:6px;}
+  .vtoggle button.on{background:hsl(var(--card)); color:hsl(var(--foreground)); box-shadow:0 1px 2px hsl(240 10% 8% / .08);}
+  .vtoggle svg{width:13px; height:13px;}
+
+  /* LIST view — traditional board */
+  .board{border:1px solid hsl(var(--border)); border-radius:var(--radius); overflow:hidden; background:hsl(var(--card));}
+  .board-head, .li{display:grid; grid-template-columns:minmax(0,1fr) 96px 110px 84px 64px 96px; align-items:center; gap:14px;}
+  .board-head{padding:11px 16px; background:hsl(var(--muted)/.6); border-bottom:1px solid hsl(var(--border)); font-family:var(--font-mono); font-size:11px; font-weight:600; color:hsl(var(--muted-foreground)); text-transform:uppercase; letter-spacing:.03em;}
+  .li{padding:13px 16px; border-bottom:1px solid hsl(var(--border)); cursor:pointer; transition:background .12s;}
+  .li:last-child{border-bottom:0;}
+  .li:hover{background:hsl(var(--muted)/.45);}
+  .li-title{display:flex; align-items:center; gap:11px; min-width:0;}
+  .li-ico{width:30px; height:30px; border-radius:7px; display:grid; place-items:center; color:#fff; font-family:var(--font-mono); font-weight:700; font-size:11px; flex-shrink:0;}
+  .li-tb{min-width:0;}
+  .li-tb h3{margin:0 0 3px; font-size:13.5px; font-weight:700; letter-spacing:-.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:7px;}
+  .li-tags{display:flex; gap:4px;}
+  .li-tags .t{font-size:10px; padding:1px 6px;}
+  .li-plat{font-family:var(--font-mono); font-size:12px; color:hsl(var(--muted-foreground));}
+  .li-author{display:flex; align-items:center; gap:7px; font-size:12.5px; color:hsl(240 5% 30%);}
+  .li-author .a-av{width:22px; height:22px; border-radius:6px; background:hsl(var(--muted)); color:hsl(var(--muted-foreground)); display:grid; place-items:center; font-family:var(--font-mono); font-size:10px; font-weight:700; flex-shrink:0;}
+  .li-rate{font-family:var(--font-mono); font-size:12.5px; font-weight:600;}
+  .li-cmt{font-family:var(--font-mono); font-size:12.5px; color:hsl(var(--muted-foreground));}
+  .li-date{font-family:var(--font-mono); font-size:12px; color:hsl(var(--muted-foreground)); text-align:right;}
+
+  .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
+  .xc{position:relative; background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:var(--radius); padding:15px; cursor:pointer; transition:.15s; display:flex; flex-direction:column; gap:11px;}
+  .xc:hover{border-color:hsl(var(--accent)/.45); box-shadow:0 8px 24px -12px hsl(240 10% 8% / .22); transform:translateY(-1px);}
+  .xc-top{display:flex; align-items:flex-start; gap:11px;}
+  .xc-ico{width:38px; height:38px; border-radius:9px; display:grid; place-items:center; color:#fff; font-family:var(--font-mono); font-weight:700; font-size:13px; flex-shrink:0;}
+  .xc-h{flex:1; min-width:0;}
+  .xc-h h3{margin:0 0 2px; font-size:14.5px; font-weight:700; letter-spacing:-.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .xc-h .prov{font-family:var(--font-mono); font-size:11.5px; color:hsl(var(--muted-foreground));}
+  .xc-desc{margin:0; font-size:13px; color:hsl(var(--muted-foreground)); line-height:1.48; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+  .xc-tags{display:flex; gap:5px; flex-wrap:wrap;}
+  .t{font-family:var(--font-mono); font-size:11px; color:hsl(var(--muted-foreground)); background:hsl(var(--muted)/.7); border-radius:5px; padding:2px 7px;}
+  .xc-foot{display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:11px; border-top:1px solid hsl(var(--border)); font-family:var(--font-mono); font-size:11.5px; color:hsl(var(--muted-foreground));}
+  .xc-foot .star{color:hsl(var(--foreground)); font-weight:600;}
+  .pager{display:flex; justify-content:center; gap:5px; margin-top:26px; font-family:var(--font-mono);}
+  .pager a{min-width:32px; height:32px; padding:0 8px; display:grid; place-items:center; border:1px solid hsl(var(--border)); border-radius:7px; font-size:12.5px; color:hsl(var(--muted-foreground)); cursor:pointer;}
+  .pager a.on{background:hsl(var(--primary)); color:#fff; border-color:hsl(var(--primary));}
+
+  /* ============ DETAIL ============ */
+  .detail{display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:24px; align-items:start;}
+  .back{display:inline-flex; align-items:center; gap:6px; font-size:13px; color:hsl(var(--muted-foreground)); margin-bottom:16px; cursor:pointer;}
+  .d-head{display:flex; gap:16px; align-items:flex-start; padding-bottom:20px; border-bottom:1px solid hsl(var(--border)); margin-bottom:20px;}
+  .d-ico{width:60px; height:60px; border-radius:14px; display:grid; place-items:center; color:#fff; font-family:var(--font-mono); font-weight:700; font-size:20px; flex-shrink:0;}
+  .d-head h1{font-size:24px; font-weight:800; letter-spacing:-.02em; margin:0 0 8px;}
+  .d-badges{display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;}
+  .d-meta{font-family:var(--font-mono); font-size:12px; color:hsl(var(--muted-foreground)); display:flex; gap:10px; flex-wrap:wrap;}
+  .d-cta{display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;}
+  .d-sec{margin-bottom:24px;}
+  .d-sec h2{font-size:15px; font-weight:700; margin:0 0 10px;}
+  .d-sec p{margin:0 0 12px; color:hsl(240 5% 30%); line-height:1.6;}
+  .d-feat{list-style:none; padding:0; margin:0; display:grid; gap:8px;}
+  .d-feat li{display:flex; gap:9px; align-items:flex-start; font-size:13.5px; color:hsl(240 5% 30%);}
+  .d-feat li::before{content:"✓"; color:hsl(var(--success)); font-weight:700; flex-shrink:0;}
+  .d-tags{display:flex; gap:6px; flex-wrap:wrap;}
+
+  .mcp{position:sticky; top:72px; padding:18px; background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:var(--radius);}
+  .mcp-h{display:flex; align-items:center; gap:7px; font-size:13px; font-weight:700; margin-bottom:3px;}
+  .mcp-sub{font-size:12px; color:hsl(var(--muted-foreground)); margin:0 0 14px;}
+  .mcp-row{display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid hsl(var(--border)); font-size:12.5px;}
+  .mcp-row:last-of-type{border-bottom:0;}
+  .mcp-row .k{color:hsl(var(--muted-foreground));}
+  .mcp-row .v{font-family:var(--font-mono); font-weight:600;}
+  .mcp-note{display:flex; gap:8px; align-items:flex-start; padding:10px; border-radius:8px; font-size:12px; line-height:1.45; margin-top:12px;}
+  .mcp-note.ok{background:hsl(142 40% 96%); color:hsl(142 40% 28%);}
+  .mcp-note.warn{background:hsl(35 90% 96%); color:hsl(35 70% 32%);}
+  .mcp-note .i{font-family:var(--font-mono); font-weight:700; flex-shrink:0;}
+
+  .comment-box{margin-bottom:16px;}
+  .cm{display:flex; gap:11px; padding:14px 0; border-top:1px solid hsl(var(--border));}
+  .cm-av{width:30px; height:30px; border-radius:8px; background:hsl(var(--muted)); color:hsl(var(--muted-foreground)); display:grid; place-items:center; font-family:var(--font-mono); font-size:11px; font-weight:700; flex-shrink:0;}
+  .cm-b .cm-meta{font-size:12px; margin-bottom:3px;}
+  .cm-b .cm-meta b{font-weight:700;}
+  .cm-b .cm-meta span{font-family:var(--font-mono); color:hsl(var(--muted-foreground)); margin-left:6px;}
+  .cm-b p{margin:0; font-size:13.5px; color:hsl(240 5% 30%);}
+
+  /* ============ STEPPER / SUBMIT ============ */
+  .submit{display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:24px; align-items:start;}
+  .stepper{display:flex; gap:8px; margin-bottom:22px;}
+  .step{flex:1; padding:11px 13px; border:1px solid hsl(var(--border)); border-radius:9px; background:hsl(var(--card)); display:flex; align-items:center; gap:9px;}
+  .step.on{border-color:hsl(var(--primary)); background:hsl(var(--primary)); color:#fff;}
+  .step.done{border-color:hsl(var(--success)/.4); background:hsl(142 40% 97%);}
+  .step .sn{width:20px; height:20px; border-radius:6px; background:hsl(var(--muted)); color:hsl(var(--muted-foreground)); display:grid; place-items:center; font-family:var(--font-mono); font-size:11px; font-weight:700; flex-shrink:0;}
+  .step.on .sn{background:#fff; color:hsl(var(--primary));}
+  .step.done .sn{background:hsl(var(--success)); color:#fff;}
+  .step .st{font-size:12.5px; font-weight:600;}
+  .url-row{display:flex; gap:8px;}
+  .url-row .input{flex:1;}
+  .helper{font-size:12px; color:hsl(var(--muted-foreground)); margin-top:7px; display:flex; gap:6px; align-items:center;}
+  .form-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:8px; padding-top:18px; border-top:1px solid hsl(var(--border));}
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+
+  .preview-panel{position:sticky; top:72px;}
+  .preview-label{font-size:11.5px; font-weight:700; font-family:var(--font-mono); color:hsl(var(--muted-foreground)); text-transform:uppercase; letter-spacing:.04em; margin-bottom:10px;}
+  .skeleton{background:linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(240 5% 92%) 50%, hsl(var(--muted)) 75%); background-size:200% 100%; animation:sk 1.4s infinite; border-radius:5px;}
+  @keyframes sk{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+  .state-note{display:flex; gap:8px; align-items:flex-start; padding:10px 12px; border-radius:8px; font-size:12px; margin-top:10px;}
+  .state-note.ok{background:hsl(142 40% 96%); color:hsl(142 40% 28%);}
+  .state-note.load{background:hsl(var(--muted)); color:hsl(var(--muted-foreground));}
+  .state-note.fail{background:hsl(0 80% 97%); color:hsl(var(--danger));}
+
+  /* ============ CURATOR ============ */
+  .cur-hero{max-width:720px; margin-bottom:28px;}
+  .cur-layout{display:grid; grid-template-columns:260px minmax(0,1fr); gap:24px; align-items:start;}
+  .agent{position:sticky; top:72px; padding:18px; background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:var(--radius);}
+  .agent-h{font-family:var(--font-mono); font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:hsl(var(--muted-foreground)); margin-bottom:16px;}
+  .astep{display:flex; gap:11px; padding-bottom:18px; position:relative;}
+  .astep:last-child{padding-bottom:0;}
+  .astep::after{content:""; position:absolute; left:13px; top:28px; bottom:0; width:1.5px; background:hsl(var(--border));}
+  .astep:last-child::after{display:none;}
+  .astep .an{width:26px; height:26px; border-radius:8px; display:grid; place-items:center; font-family:var(--font-mono); font-size:12px; font-weight:700; flex-shrink:0; z-index:1;}
+  .astep.done .an{background:hsl(var(--success)); color:#fff;}
+  .astep.active .an{background:hsl(var(--accent)); color:#fff; box-shadow:0 0 0 4px hsl(var(--accent)/.18);}
+  .astep.wait .an{background:hsl(var(--muted)); color:hsl(var(--muted-foreground));}
+  .astep .at{font-size:13px; font-weight:600;}
+  .astep .ad{font-size:12px; color:hsl(var(--muted-foreground)); margin-top:2px;}
+
+  .rec-group{margin-bottom:18px;}
+  .rec-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;}
+  .rec-head h2{font-size:17px; font-weight:800; letter-spacing:-.01em; margin:0;}
+  .rec-why{font-size:13px; color:hsl(var(--muted-foreground)); margin:0 0 14px;}
+  .rec-flow{display:grid; gap:10px;}
+  .rec-card{display:flex; align-items:center; gap:13px; padding:13px; border:1px solid hsl(var(--border)); border-radius:var(--radius); background:hsl(var(--card));}
+  .rec-step{font-family:var(--font-mono); font-size:11px; font-weight:700; color:hsl(var(--accent)); background:hsl(var(--accent-muted)); border-radius:6px; padding:3px 8px; flex-shrink:0;}
+  .rec-ico{width:38px; height:38px; border-radius:9px; display:grid; place-items:center; color:#fff; font-family:var(--font-mono); font-weight:700; font-size:13px; flex-shrink:0;}
+  .rec-card .rb{flex:1; min-width:0;}
+  .rec-card .rb h4{margin:0 0 2px; font-size:14px; font-weight:700;}
+  .rec-card .rb p{margin:0; font-size:12.5px; color:hsl(var(--muted-foreground));}
+
+  /* ============ MYPAGE ============ */
+  .mp-head{display:flex; gap:16px; align-items:center; padding-bottom:22px; border-bottom:1px solid hsl(var(--border)); margin-bottom:22px;}
+  .mp-av{width:56px; height:56px; border-radius:14px; background:hsl(142 40% 92%); color:hsl(var(--success)); display:grid; place-items:center; font-family:var(--font-mono); font-weight:700; font-size:20px;}
+  .mp-head h1{font-size:20px; font-weight:800; margin:0 0 3px;}
+  .mp-head .mp-mail{font-family:var(--font-mono); font-size:12.5px; color:hsl(var(--muted-foreground));}
+  .mp-tabs{display:flex; gap:4px; margin-bottom:18px; border-bottom:1px solid hsl(var(--border));}
+  .mp-tabs a{font-size:13px; font-weight:600; color:hsl(var(--muted-foreground)); padding:9px 13px; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px;}
+  .mp-tabs a.on{color:hsl(var(--foreground)); border-bottom-color:hsl(var(--primary));}
+  .mp-list{display:grid; gap:10px;}
+  .mp-item{display:flex; align-items:center; gap:13px; padding:13px; border:1px solid hsl(var(--border)); border-radius:var(--radius); background:hsl(var(--card));}
+  .mp-item .mi-ico{width:36px; height:36px; border-radius:9px; display:grid; place-items:center; color:#fff; font-family:var(--font-mono); font-weight:700; font-size:12px; flex-shrink:0;}
+  .mp-item .mi-b{flex:1; min-width:0;}
+  .mp-item .mi-b h4{margin:0 0 2px; font-size:14px; font-weight:700;}
+  .mp-item .mi-b .mi-meta{font-family:var(--font-mono); font-size:11.5px; color:hsl(var(--muted-foreground));}
+  .mp-actions{display:flex; gap:5px;}
+
+  @media(max-width:880px){
+    .grid,.grid-2{grid-template-columns:1fr;}
+    .board-head{display:none;}
+    .li{grid-template-columns:1fr auto; gap:8px;}
+    .li-plat,.li-rate,.li-cmt{display:none;}
+    .detail,.submit,.cur-layout{grid-template-columns:1fr;}
+    .auth-wrap{grid-template-columns:1fr;} .auth-aside{display:none;}
+    h1.head{font-size:34px;} .toolbar{flex-wrap:wrap;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== APP HEADER ===================== -->
+<header class="bar" id="appHeader">
+  <div class="bar-in">
+    <a class="logo" href="?page=explore"><span class="logo-mark"></span>Extendly</a>
+    <nav class="nav">
+      <a data-nav="explore" href="?page=explore">Explore</a>
+      <a data-nav="submit" href="?page=submit">Submit</a>
+      <a data-nav="curator" href="?page=curator">AI Curator</a>
+    </nav>
+    <div class="bar-r">
+      <a class="btn btn-ghost btn-sm" href="?page=login">로그인</a>
+      <a class="btn btn-primary btn-sm" href="?page=signup">회원가입</a>
+      <a class="av" href="?page=mypage">YR</a>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== S1. LOGIN ===================== -->
+<main id="page-login" class="page" hidden>
+  <div class="auth-wrap">
+    <aside class="auth-aside">
+      <a class="logo" href="?page=explore"><span class="logo-mark"></span>Extendly</a>
+      <div class="auth-points">
+        <div class="auth-point"><span class="n">›_</span><p><b>자연어로 검색하세요.</b> 키워드가 아니라 하려는 일을 말하면 맞는 익스텐션을 찾아줘요.</p></div>
+        <div class="auth-point"><span class="n">✓</span><p><b>MCP가 검증한 메타데이터.</b> 다운로드·버전·권한 정보를 원본에서 자동 수집합니다.</p></div>
+        <div class="auth-point"><span class="n">✦</span><p><b>AI 큐레이터.</b> 목표를 말하면 익스텐션 조합을 추천받을 수 있어요.</p></div>
+      </div>
+      <span class="auth-foot">extendly · ai-powered extension registry</span>
+    </aside>
+    <div class="auth-main">
+      <div class="auth-card">
+        <h1>다시 오셨네요</h1>
+        <p class="sub">계정에 로그인하고 익스텐션을 탐색하세요.</p>
+        <div class="field"><label class="label">이메일</label><input class="input" type="email" placeholder="you@example.com"></div>
+        <div class="field"><label class="label">비밀번호</label><input class="input" type="password" placeholder="••••••••"></div>
+        <button class="btn btn-primary btn-lg btn-block">로그인</button>
+        <p class="helper" style="justify-content:center; margin-top:12px;">🔒 JWT 발급 · Argon2 검증</p>
+        <p class="auth-switch">계정이 없으신가요? <a href="?page=signup">회원가입</a></p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== S1. SIGNUP ===================== -->
+<main id="page-signup" class="page" hidden>
+  <div class="auth-wrap">
+    <aside class="auth-aside">
+      <a class="logo" href="?page=explore"><span class="logo-mark"></span>Extendly</a>
+      <div class="auth-points">
+        <div class="auth-point"><span class="n">1</span><p><b>익스텐션을 등록하세요.</b> URL만 넣으면 MCP가 정보를 자동으로 채웁니다.</p></div>
+        <div class="auth-point"><span class="n">2</span><p><b>의미 기반으로 검색하세요.</b> 흩어진 익스텐션을 한곳에서 비교합니다.</p></div>
+        <div class="auth-point"><span class="n">3</span><p><b>마이페이지에서 관리하세요.</b> 내 글, 댓글, 북마크를 한눈에.</p></div>
+      </div>
+      <span class="auth-foot">extendly · ai-powered extension registry</span>
+    </aside>
+    <div class="auth-main">
+      <div class="auth-card">
+        <h1>계정 만들기</h1>
+        <p class="sub">무료로 시작하고 익스텐션을 공유하세요.</p>
+        <div class="field"><label class="label">닉네임</label><input class="input" placeholder="ran"></div>
+        <div class="field"><label class="label">이메일</label><input class="input" type="email" placeholder="you@example.com"></div>
+        <div class="field"><label class="label">비밀번호</label><input class="input" type="password" placeholder="8자 이상"></div>
+        <div class="field"><label class="label">비밀번호 확인</label><input class="input" type="password" placeholder="다시 입력"><p class="err">비밀번호가 일치하지 않습니다.</p></div>
+        <button class="btn btn-primary btn-lg btn-block">가입하기</button>
+        <p class="auth-switch">이미 계정이 있으신가요? <a href="?page=login">로그인</a></p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== S2. EXPLORE / MAIN ===================== -->
+<main id="page-explore" class="page" hidden>
+  <div class="wrap">
+    <section class="hero">
+      <span class="eyebrow"><span class="dot"></span>AI-POWERED EXTENSION REGISTRY</span>
+      <h1 class="head">필요한 걸 말하면,<br><em>맞는 익스텐션</em>을 찾아줘요</h1>
+      <p class="lede">Chrome · Obsidian · VS Code · Raycast에 흩어진 익스텐션을 자연어로 검색하고 비교하세요.</p>
+      <div class="cmd">
+        <div class="cmd-top">
+          <span class="cmd-chev mono">›_</span>
+          <input placeholder="논문 읽을 때 PDF 요약해주는 크롬 확장 찾아줘">
+          <button class="btn btn-accent btn-sm">검색</button>
+        </div>
+        <div class="cmd-foot">
+          <span class="cmd-hint">의미 기반 검색 · 키워드가 아니라 <b style="color:hsl(var(--accent));font-weight:600;">하려는 일</b>로 찾아요</span>
+          <span class="spacer"></span>
+          <span class="cmd-hint"><span class="kbd">⌘</span><span class="kbd">K</span></span>
+        </div>
+      </div>
+      <div class="suggest">
+        <span class="s"><b>#</b>글쓰기 자동화</span><span class="s"><b>#</b>개발 생산성</span>
+        <span class="s"><b>#</b>탭 정리</span><span class="s"><b>#</b>노트 정리</span><span class="s"><b>#</b>AI 요약</span>
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <div class="seg"><a class="on">추천</a><a>인기</a><a>최신</a><a>북마크</a></div>
+      <div class="plat"><a class="on">all</a><a>chrome</a><a>obsidian</a><a>vscode</a><a>raycast</a><a>notion</a></div>
+    </div>
+
+    <div class="rhead">
+      <div><div class="n">128 results <span>· "글쓰기 자동화"</span></div><div class="q">sorted by semantic relevance</div></div>
+      <div class="rhead-r">
+        <span class="badge badge-accent">✦ RAG</span>
+        <div class="vtoggle" id="vtoggle">
+          <button data-view="grid" class="on" title="카드 보기">
+            <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+            카드
+          </button>
+          <button data-view="list" title="목록 보기">
+            <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="2.4" rx="1"/><rect x="1" y="6.8" width="14" height="2.4" rx="1"/><rect x="1" y="11.6" width="14" height="2.4" rx="1"/></svg>
+            목록
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid" id="view-grid">
+      <a class="xc" href="?page=detail">
+        <div class="xc-top"><span class="xc-ico" style="background:#ef4444;">RG</span><div class="xc-h"><h3>Raycast GitHub</h3><div class="prov">@raycast/community</div></div><span class="badge badge-accent">94%</span></div>
+        <p class="xc-desc">GitHub issues, PR, notifications를 빠르게 확인하고 처리하는 생산성 익스텐션.</p>
+        <div class="xc-tags"><span class="t">devtools</span><span class="t">github</span><span class="t">productivity</span></div>
+        <div class="xc-foot"><span class="star">★ 4.8 · 12.4k</span><span class="badge badge-success" style="height:19px;">✓ MCP</span></div>
+      </a>
+      <a class="xc" href="?page=detail">
+        <div class="xc-top"><span class="xc-ico" style="background:#7c5cff;">OW</span><div class="xc-h"><h3>Obsidian Web Clipper</h3><div class="prov">@obsidian/plugin</div></div><span class="badge badge-accent">91%</span></div>
+        <p class="xc-desc">웹 페이지를 Obsidian 노트로 저장하고 태그와 메타데이터를 함께 정리합니다.</p>
+        <div class="xc-tags"><span class="t">notes</span><span class="t">research</span><span class="t">automation</span></div>
+        <div class="xc-foot"><span class="star">★ 4.7 · 9.8k</span><span class="badge badge-success" style="height:19px;">✓ MCP</span></div>
+      </a>
+      <a class="xc" href="?page=detail">
+        <div class="xc-top"><span class="xc-ico" style="background:#3b82f6;">CM</span><div class="xc-h"><h3>Commit Message AI</h3><div class="prov">@opensource/vscode</div></div><span class="badge badge-accent">88%</span></div>
+        <p class="xc-desc">코드 변경사항을 분석해 커밋 메시지 초안을 추천합니다.</p>
+        <div class="xc-tags"><span class="t">git</span><span class="t">ai</span><span class="t">developer</span></div>
+        <div class="xc-foot"><span class="star">★ 4.5 · 22.1k</span><span class="badge badge-outline" style="height:19px;">unverified</span></div>
+      </a>
+      <a class="xc" href="?page=detail">
+        <div class="xc-top"><span class="xc-ico" style="background:#10b981;">TT</span><div class="xc-h"><h3>Tab Tidy</h3><div class="prov">@chrome/store</div></div><span class="badge badge-accent">85%</span></div>
+        <p class="xc-desc">열려 있는 탭을 주제별로 자동 그룹핑하고 세션을 저장합니다.</p>
+        <div class="xc-tags"><span class="t">tabs</span><span class="t">browser</span><span class="t">focus</span></div>
+        <div class="xc-foot"><span class="star">★ 4.6 · 31.2k</span><span class="badge badge-success" style="height:19px;">✓ MCP</span></div>
+      </a>
+      <a class="xc" href="?page=detail">
+        <div class="xc-top"><span class="xc-ico" style="background:#f59e0b;">NP</span><div class="xc-h"><h3>Notion Publisher</h3><div class="prov">@notion/integration</div></div><span class="badge badge-accent">82%</span></div>
+        <p class="xc-desc">마크다운 글을 Notion 페이지로 발행하고 태그를 동기화합니다.</p>
+        <div class="xc-tags"><span class="t">notion</span><span class="t">publish</span><span class="t">markdown</span></div>
+        <div class="xc-foot"><span class="star">★ 4.4 · 7.1k</span><span class="badge badge-success" style="height:19px;">✓ MCP</span></div>
+      </a>
+      <a class="xc" href="?page=detail">
+        <div class="xc-top"><span class="xc-ico" style="background:#6366f1;">GC</span><div class="xc-h"><h3>Grammar Checker</h3><div class="prov">@obsidian/plugin</div></div><span class="badge badge-accent">79%</span></div>
+        <p class="xc-desc">문장 톤과 오탈자를 확인하고 대체 표현을 제안합니다.</p>
+        <div class="xc-tags"><span class="t">writing</span><span class="t">grammar</span><span class="t">ai</span></div>
+        <div class="xc-foot"><span class="star">★ 4.7 · 14.0k</span><span class="badge badge-success" style="height:19px;">✓ MCP</span></div>
+      </a>
+    </div>
+
+    <!-- LIST VIEW (traditional board) -->
+    <div class="board" id="view-list" hidden>
+      <div class="board-head">
+        <span>익스텐션 / 태그</span><span>플랫폼</span><span>작성자</span><span>평점</span><span>댓글</span><span style="text-align:right;">등록일</span>
+      </div>
+      <a class="li" href="?page=detail">
+        <div class="li-title"><span class="li-ico" style="background:#ef4444;">RG</span><div class="li-tb"><h3>Raycast GitHub <span class="badge badge-accent" style="height:17px;">94%</span> <span class="badge badge-success" style="height:17px;">✓ MCP</span></h3><div class="li-tags"><span class="t">devtools</span><span class="t">github</span><span class="t">productivity</span></div></div></div>
+        <span class="li-plat">raycast</span>
+        <div class="li-author"><span class="a-av">RC</span>raycast</div>
+        <span class="li-rate">★ 4.8</span>
+        <span class="li-cmt">💬 24</span>
+        <span class="li-date">2026.05.21</span>
+      </a>
+      <a class="li" href="?page=detail">
+        <div class="li-title"><span class="li-ico" style="background:#7c5cff;">OW</span><div class="li-tb"><h3>Obsidian Web Clipper <span class="badge badge-accent" style="height:17px;">91%</span> <span class="badge badge-success" style="height:17px;">✓ MCP</span></h3><div class="li-tags"><span class="t">notes</span><span class="t">research</span><span class="t">automation</span></div></div></div>
+        <span class="li-plat">obsidian</span>
+        <div class="li-author"><span class="a-av">OB</span>obsidian</div>
+        <span class="li-rate">★ 4.7</span>
+        <span class="li-cmt">💬 12</span>
+        <span class="li-date">2026.04.30</span>
+      </a>
+      <a class="li" href="?page=detail">
+        <div class="li-title"><span class="li-ico" style="background:#3b82f6;">CM</span><div class="li-tb"><h3>Commit Message AI <span class="badge badge-accent" style="height:17px;">88%</span> <span class="badge badge-outline" style="height:17px;">unverified</span></h3><div class="li-tags"><span class="t">git</span><span class="t">ai</span><span class="t">developer</span></div></div></div>
+        <span class="li-plat">vscode</span>
+        <div class="li-author"><span class="a-av">OS</span>opensource</div>
+        <span class="li-rate">★ 4.5</span>
+        <span class="li-cmt">💬 38</span>
+        <span class="li-date">2026.06.02</span>
+      </a>
+      <a class="li" href="?page=detail">
+        <div class="li-title"><span class="li-ico" style="background:#10b981;">TT</span><div class="li-tb"><h3>Tab Tidy <span class="badge badge-accent" style="height:17px;">85%</span> <span class="badge badge-success" style="height:17px;">✓ MCP</span></h3><div class="li-tags"><span class="t">tabs</span><span class="t">browser</span><span class="t">focus</span></div></div></div>
+        <span class="li-plat">chrome</span>
+        <div class="li-author"><span class="a-av">CH</span>chrome</div>
+        <span class="li-rate">★ 4.6</span>
+        <span class="li-cmt">💬 17</span>
+        <span class="li-date">2026.05.10</span>
+      </a>
+      <a class="li" href="?page=detail">
+        <div class="li-title"><span class="li-ico" style="background:#f59e0b;">NP</span><div class="li-tb"><h3>Notion Publisher <span class="badge badge-accent" style="height:17px;">82%</span> <span class="badge badge-success" style="height:17px;">✓ MCP</span></h3><div class="li-tags"><span class="t">notion</span><span class="t">publish</span><span class="t">markdown</span></div></div></div>
+        <span class="li-plat">notion</span>
+        <div class="li-author"><span class="a-av">NT</span>notion</div>
+        <span class="li-rate">★ 4.4</span>
+        <span class="li-cmt">💬 9</span>
+        <span class="li-date">2026.03.28</span>
+      </a>
+      <a class="li" href="?page=detail">
+        <div class="li-title"><span class="li-ico" style="background:#6366f1;">GC</span><div class="li-tb"><h3>Grammar Checker <span class="badge badge-accent" style="height:17px;">79%</span> <span class="badge badge-success" style="height:17px;">✓ MCP</span></h3><div class="li-tags"><span class="t">writing</span><span class="t">grammar</span><span class="t">ai</span></div></div></div>
+        <span class="li-plat">obsidian</span>
+        <div class="li-author"><span class="a-av">OB</span>obsidian</div>
+        <span class="li-rate">★ 4.7</span>
+        <span class="li-cmt">💬 21</span>
+        <span class="li-date">2026.05.18</span>
+      </a>
+    </div>
+
+    <div class="pager"><a>‹</a><a class="on">1</a><a>2</a><a>3</a><a>…</a><a>11</a><a>›</a></div>
+  </div>
+</main>
+
+<!-- ===================== S3. DETAIL ===================== -->
+<main id="page-detail" class="page" hidden>
+  <div class="wrap page-pad">
+    <a class="back" href="?page=explore">‹ 검색 결과로 돌아가기</a>
+    <div class="detail">
+      <div>
+        <div class="d-head">
+          <span class="d-ico" style="background:#7c5cff;">OW</span>
+          <div>
+            <div class="d-badges"><span class="badge badge-muted">obsidian</span><span class="badge badge-success">✓ MCP 검증</span><span class="badge badge-outline">community</span></div>
+            <h1>Obsidian Web Clipper</h1>
+            <div class="d-meta"><span>@obsidian/plugin</span><span>★ 4.7</span><span>9.8k 다운로드</span><span>2026.04.30</span><span>research</span></div>
+            <div class="d-cta">
+              <button class="btn btn-primary">원본 링크 열기 ↗</button>
+              <button class="btn btn-outline">＋ 북마크</button>
+              <button class="btn btn-ghost" style="color:hsl(var(--accent));">비슷한 익스텐션 찾기</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-sec">
+          <h2>설명</h2>
+          <p>웹 페이지를 Obsidian 노트로 저장하고 제목, 출처, 태그, 요약을 함께 정리합니다. 리서치와 글쓰기 워크플로우에서 반복되는 복사/붙여넣기 작업을 줄이는 데 초점을 둔 익스텐션입니다.</p>
+        </div>
+        <div class="d-sec">
+          <h2>주요 기능</h2>
+          <ul class="d-feat">
+            <li>현재 페이지의 본문과 링크를 Markdown 형태로 저장</li>
+            <li>선택한 텍스트를 노트 하이라이트로 캡처</li>
+            <li>태그·출처·작성일 메타데이터 자동 생성</li>
+          </ul>
+        </div>
+        <div class="d-sec">
+          <h2>태그</h2>
+          <div class="d-tags"><span class="t">notes</span><span class="t">research</span><span class="t">automation</span><span class="t">markdown</span></div>
+        </div>
+
+        <div class="d-sec">
+          <h2>댓글 <span style="font-family:var(--font-mono); font-weight:500; color:hsl(var(--muted-foreground)); font-size:13px;">12</span></h2>
+          <div class="comment-box">
+            <textarea class="input" rows="2" placeholder="댓글을 입력하세요. 예: 연구 노트 정리할 때 어떤 템플릿과 같이 쓰면 좋은지 공유해보세요."></textarea>
+            <div style="display:flex; justify-content:flex-end; margin-top:8px;"><button class="btn btn-primary btn-sm">댓글 등록</button></div>
+          </div>
+          <div class="cm"><span class="cm-av">MJ</span><div class="cm-b"><div class="cm-meta"><b>minji</b><span>2일 전</span></div><p>PDF에서 클립한 내용을 Obsidian Daily Note로 바로 보내는 흐름이 좋았어요.</p></div></div>
+          <div class="cm"><span class="cm-av">DN</span><div class="cm-b"><div class="cm-meta"><b>devnote</b><span>5일 전</span></div><p>업데이트가 꾸준해서 팀 문서화 플로우에 붙여 쓰기 괜찮습니다.</p></div></div>
+        </div>
+      </div>
+
+      <aside class="mcp">
+        <div class="mcp-h">⚡ 수집된 정보</div>
+        <p class="mcp-sub">MCP가 원본 링크에서 가져온 신뢰 메타데이터</p>
+        <div class="mcp-row"><span class="k">다운로드</span><span class="v">9,800</span></div>
+        <div class="mcp-row"><span class="k">최신 버전</span><span class="v">v1.8.3</span></div>
+        <div class="mcp-row"><span class="k">마지막 업데이트</span><span class="v">2026.04.30</span></div>
+        <div class="mcp-row"><span class="k">GitHub stars</span><span class="v">1,240</span></div>
+        <div class="mcp-row"><span class="k">License</span><span class="v">MIT</span></div>
+        <div class="mcp-row"><span class="k">Source</span><span class="v">github ↗</span></div>
+        <div class="mcp-row"><span class="k">Compatibility</span><span class="v">Obsidian 1.6+</span></div>
+        <div class="mcp-row"><span class="k">수집 시각</span><span class="v">오늘 13:20</span></div>
+        <div class="mcp-note ok"><span class="i">✓</span><span>공식 스토어 링크와 GitHub Repository가 확인되었습니다.</span></div>
+        <div class="mcp-note warn"><span class="i">!</span><span>권한 정보 있음: clipboard, active tab, local files.</span></div>
+        <button class="btn btn-outline btn-sm btn-block" style="margin-top:12px;">↻ 정보 새로고침</button>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== S4. SUBMIT ===================== -->
+<main id="page-submit" class="page" hidden>
+  <div class="wrap page-pad">
+    <h1 class="page-title">새 익스텐션 등록</h1>
+    <p class="page-sub">원본 URL을 붙여넣으면 MCP가 정보를 자동으로 채웁니다. 확인 후 직접 수정할 수 있어요.</p>
+
+    <div class="stepper">
+      <div class="step done"><span class="sn">✓</span><span class="st">원본 URL</span></div>
+      <div class="step on"><span class="sn">2</span><span class="st">자동 채움</span></div>
+      <div class="step"><span class="sn">3</span><span class="st">직접 수정</span></div>
+      <div class="step"><span class="sn">4</span><span class="st">제출</span></div>
+    </div>
+
+    <div class="submit">
+      <div class="card" style="padding:20px;">
+        <div class="field">
+          <label class="label">원본 URL</label>
+          <div class="url-row">
+            <input class="input" value="https://marketplace.visualstudio.com/items?itemName=...">
+            <button class="btn btn-primary">자동으로 불러오기</button>
+          </div>
+          <p class="helper">⚡ MCP가 이름·아이콘·설명·버전·별점·업데이트 정보를 자동으로 가져옵니다.</p>
+        </div>
+        <hr style="border:none; border-top:1px solid hsl(var(--border)); margin:18px 0;">
+        <div class="field"><label class="label">제목</label><input class="input" value="Commit Message AI"></div>
+        <div class="field"><label class="label">설명</label><textarea class="input" rows="2">코드 변경사항을 분석해 커밋 메시지 초안을 추천합니다. Git workflow를 자주 쓰는 개발자에게 잘 맞습니다.</textarea></div>
+        <div class="grid-2">
+          <div class="field"><label class="label">플랫폼</label><select class="input"><option>VS Code</option><option>Chrome</option><option>Obsidian</option><option>Raycast</option><option>Notion</option></select></div>
+          <div class="field"><label class="label">카테고리</label><select class="input"><option>Developer tools</option><option>Productivity</option><option>Writing</option></select></div>
+        </div>
+        <div class="field"><label class="label">태그</label><input class="input" value="git, ai, developer, productivity"></div>
+        <div class="field"><label class="label">본문</label><textarea class="input" rows="3" placeholder="사용 예시, 설치 방법, 함께 쓰면 좋은 익스텐션을 적어주세요."></textarea></div>
+        <div class="form-actions">
+          <button class="btn btn-ghost">미리보기</button>
+          <button class="btn btn-outline">임시저장</button>
+          <button class="btn btn-primary">등록하기</button>
+        </div>
+      </div>
+
+      <aside class="preview-panel">
+        <div class="preview-label">자동 채움 미리보기</div>
+        <div class="xc" style="cursor:default;">
+          <div class="xc-top"><span class="xc-ico" style="background:#3b82f6;">CM</span><div class="xc-h"><h3>Commit Message AI</h3><div class="prov">vscode · @opensource</div></div><span class="badge badge-success" style="height:19px;">MCP fetched</span></div>
+          <div class="d-meta mono" style="font-size:11.5px;"><span>v0.9.4</span><span>2026.06.02</span><span>★ 4.5</span></div>
+          <div class="xc-tags"><span class="t">git</span><span class="t">ai</span><span class="t">developer</span></div>
+        </div>
+        <div class="state-note ok"><span class="i mono">✓</span><span>이름, 버전, 별점, 업데이트 정보를 찾았습니다.</span></div>
+        <div class="state-note load"><span class="i mono">⋯</span><span>로딩 중일 땐 skeleton과 "메타데이터를 가져오는 중…"이 표시됩니다.</span></div>
+        <div class="state-note fail"><span class="i mono">×</span><span>실패 시 "직접 입력할 수 있습니다." + 재시도 버튼.</span></div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== S5. CURATOR ===================== -->
+<main id="page-curator" class="page" hidden>
+  <div class="wrap page-pad">
+    <section class="cur-hero">
+      <span class="eyebrow"><span class="dot"></span>AI CURATOR · AGENT</span>
+      <h1 class="head" style="font-size:34px;">어떤 작업을 <em>더 쉽게</em> 만들고 싶나요?</h1>
+      <p class="lede">목표를 입력하면 Agent가 RAG 검색과 MCP 조회를 거쳐 익스텐션 조합을 추천합니다.</p>
+      <div class="cmd">
+        <div class="cmd-top"><span class="cmd-chev mono">›_</span><input value="블로그 쓰는 개발자인데 글쓰기 워크플로우를 도와줘"><button class="btn btn-accent btn-sm">추천 받기</button></div>
+        <div class="cmd-foot"><span class="cmd-hint">Agent가 도구를 스스로 골라 실행해요</span><span class="spacer"></span><span class="cmd-hint"><span class="kbd">⌘</span><span class="kbd">↵</span></span></div>
+      </div>
+      <div class="suggest"><span class="s"><b>#</b>개발 생산성</span><span class="s"><b>#</b>글쓰기</span><span class="s"><b>#</b>공부/리서치</span><span class="s"><b>#</b>회의 정리</span><span class="s"><b>#</b>브라우저 정리</span></div>
+    </section>
+
+    <div class="cur-layout">
+      <aside class="agent">
+        <div class="agent-h">Agent progress</div>
+        <div class="astep done"><span class="an">✓</span><div><div class="at">RAG 검색</div><div class="ad">비슷한 익스텐션을 찾았어요</div></div></div>
+        <div class="astep active"><span class="an">2</span><div><div class="at">MCP 조회</div><div class="ad">다운로드·업데이트·GitHub 활성도 확인 중</div></div></div>
+        <div class="astep wait"><span class="an">3</span><div><div class="at">추천 조합 생성</div><div class="ad">목표에 맞는 워크플로우로 묶는 중</div></div></div>
+      </aside>
+
+      <div>
+        <div class="rec-group">
+          <div class="rec-head"><h2>글쓰기 워크플로우 추천</h2><span class="badge badge-success">MCP 기준 최신</span></div>
+          <p class="rec-why">조사 → 정리 → 발행 단계를 나누어 조합했어요. 각 단계가 자연스럽게 이어집니다.</p>
+          <div class="rec-flow">
+            <div class="rec-card"><span class="rec-step">1단계</span><span class="rec-ico" style="background:#10b981;">RH</span><div class="rb"><h4>Research Helper</h4><p>브라우저에서 자료를 읽고 PDF/웹문서를 요약합니다.</p></div><span class="badge badge-accent">의미 92%</span></div>
+            <div class="rec-card"><span class="rec-step">2단계</span><span class="rec-ico" style="background:#7c5cff;">OP</span><div class="rb"><h4>Obsidian Publisher</h4><p>노트와 태그를 블로그 초안으로 변환합니다.</p></div><span class="badge badge-accent">의미 89%</span></div>
+            <div class="rec-card"><span class="rec-step">3단계</span><span class="rec-ico" style="background:#6366f1;">GC</span><div class="rb"><h4>Grammar Checker</h4><p>문장 톤과 오탈자를 확인하고 대체 표현을 제안합니다.</p></div><span class="badge badge-accent">의미 86%</span></div>
+          </div>
+        </div>
+        <div class="rec-group">
+          <div class="rec-head"><h2 style="font-size:14px;">대체 후보</h2><span class="badge badge-muted">Raycast 선호 시</span></div>
+          <div class="rec-flow">
+            <div class="rec-card"><span class="rec-ico" style="background:#ef4444;">RS</span><div class="rb"><h4>Raycast Snippets</h4><p>자주 쓰는 문장·링크·프롬프트를 빠르게 호출합니다.</p></div><button class="btn btn-outline btn-sm">원본 보기</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== S6. MYPAGE ===================== -->
+<main id="page-mypage" class="page" hidden>
+  <div class="wrap page-pad">
+    <div class="mp-head">
+      <span class="mp-av">YR</span>
+      <div style="flex:1;"><h1>ran</h1><div class="mp-mail">ran@extendly.dev</div></div>
+      <button class="btn btn-outline btn-sm">프로필 수정</button>
+    </div>
+    <div class="mp-tabs"><a class="on">등록한 익스텐션</a><a>작성한 댓글</a><a>북마크</a><a>임시저장</a></div>
+    <div class="mp-list">
+      <div class="mp-item"><span class="mi-ico" style="background:#7c5cff;">OW</span><div class="mi-b"><h4>Obsidian Web Clipper</h4><div class="mi-meta">obsidian · ★ 4.7 · 9.8k · published</div></div><div class="mp-actions"><button class="btn btn-ghost btn-sm">수정</button><button class="btn btn-ghost btn-sm">원본 ↗</button><button class="btn btn-ghost btn-sm" style="color:hsl(var(--danger));">삭제</button></div></div>
+      <div class="mp-item"><span class="mi-ico" style="background:#f59e0b;">NP</span><div class="mi-b"><h4>Notion Publisher</h4><div class="mi-meta">notion · ★ 4.4 · 7.1k · published</div></div><div class="mp-actions"><button class="btn btn-ghost btn-sm">수정</button><button class="btn btn-ghost btn-sm">원본 ↗</button><button class="btn btn-ghost btn-sm" style="color:hsl(var(--danger));">삭제</button></div></div>
+      <div class="mp-item"><span class="mi-ico" style="background:hsl(var(--muted)); color:hsl(var(--muted-foreground));">··</span><div class="mi-b"><h4>Tab Session Saver <span class="badge badge-warning" style="margin-left:6px;">draft</span></h4><div class="mi-meta">chrome · 임시저장 · 수정 2일 전</div></div><div class="mp-actions"><button class="btn btn-ghost btn-sm">이어 작성</button><button class="btn btn-ghost btn-sm" style="color:hsl(var(--danger));">삭제</button></div></div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const pages = ["login","signup","explore","detail","submit","curator","mypage"];
+  const labels = {login:"로그인",signup:"회원가입",explore:"메인 / 검색",detail:"익스텐션 상세",submit:"글 등록",curator:"AI 큐레이터",mypage:"마이페이지"};
+  const params = new URLSearchParams(location.search);
+  const sel = pages.includes(params.get("page")) ? params.get("page") : "explore";
+  document.title = `Extendly — ${labels[sel]}`;
+  for (const p of pages){ const n = document.getElementById(`page-${p}`); if(n) n.hidden = p !== sel; }
+  document.getElementById("appHeader").hidden = (sel === "login" || sel === "signup");
+  for (const a of document.querySelectorAll("[data-nav]")){
+    a.classList.toggle("on", a.dataset.nav === sel || (sel === "detail" && a.dataset.nav === "explore") || (sel === "submit" && a.dataset.nav === "submit"));
+  }
+
+  // Explore: card/list view toggle
+  const vtoggle = document.getElementById("vtoggle");
+  if (vtoggle){
+    const gridEl = document.getElementById("view-grid");
+    const listEl = document.getElementById("view-list");
+    vtoggle.addEventListener("click", (e) => {
+      const btn = e.target.closest("button"); if(!btn) return;
+      const view = btn.dataset.view;
+      for (const b of vtoggle.querySelectorAll("button")) b.classList.toggle("on", b === btn);
+      gridEl.hidden = view !== "grid";
+      listEl.hidden = view !== "list";
+    });
+  }
+</script>
+</body>
+</html>

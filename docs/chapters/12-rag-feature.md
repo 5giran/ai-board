@@ -21,7 +21,7 @@
 - embedding 대상: `title + description + tags`
 - 저장 위치: `Extension.embedding` pgvector 컬럼
 - 검색 방식: 사용자 자연어 query embedding 후 pgvector cosine similarity top-K 검색
-- UI 차별점: 일반 키워드 검색과 달리 카드에 `N% 일치` 또는 `의미 일치 높음` badge 표시
+- UI 차별점: 일반 키워드 검색과 달리 결과 헤더에 RAG 배지를, 카드 뷰와 목록 뷰에 `N% 일치` badge를 표시
 - endpoint: `POST /ai/search`
 
 ## 직접 구현할 파일/기능
@@ -32,6 +32,7 @@
 - 자연어 의미 검색 API `POST /ai/search`
 - 상세 화면의 “비슷한 익스텐션 찾기” 기능
 - 검색 결과의 match score 응답
+- 메인 카드/목록 뷰의 match badge 표시
 - 선택 사항: 상위 결과에 대해 “왜 맞는지” 한 줄 추천 이유 생성
 
 ## 구현 전에 스스로 답할 질문
@@ -54,7 +55,8 @@
 7. pgvector cosine similarity로 top-K 익스텐션을 조회한다.
 8. 유사도를 `matchScore` 퍼센트로 환산한다.
 9. `POST /ai/search` 응답에 `extension`, `score`, `matchScore`, 선택적으로 `reason`을 포함한다.
-10. 프론트에서 RAG 검색 결과일 때만 match badge를 노출한다.
+10. 프론트에서 RAG 검색 결과일 때만 결과 헤더 RAG 배지와 match badge를 노출한다.
+11. 카드 뷰와 목록 뷰 모두에서 같은 `matchScore`를 mono accent badge로 표시한다.
 
 ## 힌트
 
@@ -76,6 +78,7 @@ pnpm --filter api test
 - 자연어 query로 관련 익스텐션이 검색된다.
 - 응답에 `matchScore`가 포함된다.
 - 일반 키워드 검색과 RAG 검색의 차이를 설명할 수 있다.
+- RAG 결과가 카드 뷰와 목록 뷰 모두에서 구분되어 보인다.
 - RAG 구조를 데이터 소스, embedding, vector search, 선택적 LLM 요약으로 설명할 수 있다.
 
 ## 나에게 공유할 내용

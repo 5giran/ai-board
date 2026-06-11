@@ -13,6 +13,14 @@
 
 - 
 
+## 레퍼런스 체크
+
+- [ ] 제품 명세: `docs/product/extendly_spec.md`
+- [ ] UI/UX 지시서: `docs/product/extendly_codex_ui_spec.md`
+- [ ] 와이어프레임: `docs/wireframes/extendly_wireframes.html`
+- [ ] UI 레퍼런스 HTML: `docs/wireframes/extendly_reference.html`
+- [ ] 이번 챕터 구현과 충돌하는 기준이 없었는지 확인
+
 ## 헷갈린 부분
 
 - 
