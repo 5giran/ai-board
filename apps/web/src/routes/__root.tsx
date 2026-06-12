@@ -1,25 +1,16 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router'
+import { Outlet, createRootRoute } from "@tanstack/react-router";
+
+import { AppHeader } from "@/components/layout/AppHeader";
 
 export const Route = createRootRoute({
   component: RootLayout,
-})
+});
 
 function RootLayout() {
   return (
-    <div className="min-h-svh bg-background text-foreground">
+    <div>
       <AppHeader />
-
-      <main>
-        <Outlet />
-      </main>
+      <Outlet />
     </div>
-  )
-}
-
-function AppHeader() {
-  return (
-    <header>
-      <h1>Extendly</h1>
-    </header>
-  )
+  );
 }
